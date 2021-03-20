@@ -27,7 +27,7 @@ export default class WFRP_Tables {
    */
   static rollTable(table, options = {}, column = null) {
     let modifier = options.modifier || 0;
-    let minOne = options.minOne || true;
+    let minOne = options.minOne;
     let maxSize = options.maxSize || false;
 
     table = table.toLowerCase();
@@ -121,6 +121,15 @@ export default class WFRP_Tables {
     table = table.replace("rarm", "arm");
     table = table.replace("larm", "arm");
     return table;
+  }
+
+  static rollToChat(table, options = {}, column = null, rollMode)
+  {
+    let chatOptions = game.wfrp4e.utility.chatDataSetup("", rollMode, true)
+    chatOptions.content = this.formatChatRoll(table, options, column);
+    chatOptions.type = 0;
+    ChatMessage.create(chatOptions);
+    ui.sidebar.activateTab("chat")
   }
 
 
@@ -251,7 +260,7 @@ export default class WFRP_Tables {
               if (part == "name")
                 html += `<b>${result[part]}</b><br>`
               else if (part == "roll")
-                html += "<b>Roll</b>: " + eval(result[part])
+                html += "<b>Roll</b>: " + result[part]
               else if (part != "range")
                 html += result[part] + "<br>"
             }

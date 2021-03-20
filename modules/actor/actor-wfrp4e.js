@@ -250,7 +250,10 @@ export default class ActorWfrp4e extends Actor {
 
 
     if (game.settings.get("wfrp4e", "capAdvantageIB"))
+    {
       data.data.status.advantage.max = data.data.characteristics.i.bonus
+      data.data.status.advantage.value = Math.clamped(data.data.status.advantage.value, 0, data.data.status.advantage.max)
+    }
     else
       data.data.status.advantage.max = 10;
 
@@ -784,7 +787,7 @@ export default class ActorWfrp4e extends Actor {
           testData.extra.ammo = duplicate(this.getEmbeddedEntity("OwnedItem", weapon.data.currentAmmo.value))
           
         if (!testData.extra.ammo || weapon.data.currentAmmo.value == 0 || testData.extra.ammo.data.quantity.value == 0) {
-          AudioHelper.play({ src: "systems/wfrp4e/sounds/no.wav" }, false)
+          AudioHelper.play({ src: `${game.settings.get("wfrp4e", "soundPath")}no.wav`}, false)
           ui.notifications.error(game.i18n.localize("Error.NoAmmo"))
           return
         }
@@ -792,7 +795,7 @@ export default class ActorWfrp4e extends Actor {
       }
       else if (weapon.data.consumesAmmo.value && weapon.data.quantity.value == 0) {
         // If this executes, it means it uses its own quantity for ammo (e.g. throwing), which it has none of
-        AudioHelper.play({ src: "systems/wfrp4e/sounds/no.wav" }, false)
+        AudioHelper.play({ src: `${game.settings.get("wfrp4e", "soundPath")}no.wav`}, false)
         ui.notifications.error(game.i18n.localize("Error.NoAmmo"))
         return;
       }
@@ -821,7 +824,7 @@ export default class ActorWfrp4e extends Actor {
     if (!testData.target)
       testData.target = wep.attackType == "melee" ? this.data.data.characteristics["ws"].value : this.data.data.characteristics["bs"].value
 
-    mergeObject(testData, this.getPrefillData("weapon", weapon, options))
+    mergeObject(testData, this.getPrefillData("weapon", wep, options))
 
     // Setup dialog data: title, template, buttons, prefilled data
     let dialogOptions = {
@@ -4179,7 +4182,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
         difficulty = "average"
     }
     
-    if (type == "weapon") {
+    if (type == "weapon" || type=="trait") {
       let { wepModifier, wepSuccessBonus, wepSLBonus } = this.weaponPrefillData(item, options, tooltip);
       modifier += wepModifier;
       slBonus += wepSLBonus;
@@ -4247,8 +4250,9 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     let slBonus = 0;
     let successBonus = 0;
     let modifier = 0;
+
     // If offhand and should apply offhand penalty (should apply offhand penalty = not parry, not defensive, and not twohanded)
-    if (getProperty(item, "data.offhand.value") && !item.data.twohanded.value && !(item.data.weaponGroup.value == "parry" && item.properties.qualities.includes(game.i18n.localize("PROPERTY.Defensive")))) {
+    if (item.type == "weapon" && getProperty(item, "data.offhand.value") && !item.data.twohanded.value && !(item.data.weaponGroup.value == "parry" && item.properties.qualities.includes(game.i18n.localize("PROPERTY.Defensive")))) {
       modifier = -20
       tooltip.push(game.i18n.localize("SHEET.Offhand"))
       modifier += Math.min(20, this.data.flags.ambi * 10)
@@ -4258,7 +4262,6 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
 
 
-    if (game.settings.get("wfrp4e", "testAutoFill")) {
       try {
 
         let target = game.user.targets.size ? Array.from(game.user.targets)[0].actor : undefined
@@ -4274,28 +4277,31 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
           };
         }
 
-        // Prefill dialog according to qualities/flaws
-        if (item.properties.qualities.includes(game.i18n.localize("PROPERTY.Accurate"))) {
-          modifier += 10;
-          tooltip.push(game.i18n.localize("PROPERTY.Accurate"))
-        }
-
         if (this.data.flags.defensive && attacker) {
           tooltip.push(game.i18n.localize("PROPERTY.Defensive"))
           slBonus += this.data.flags.defensive;
         }
 
 
-        if (item.properties.qualities.includes(game.i18n.localize("PROPERTY.Precise")) && game.user.targets.size) {
-          successBonus += 1;
-          tooltip.push(game.i18n.localize("PROPERTY.Precise"))
 
-        }
-        if (item.properties.flaws.includes(game.i18n.localize("PROPERTY.Imprecise")) && game.user.targets.size) {
-          slBonus -= 1;
-          tooltip.push(game.i18n.localize("PROPERTY.Imprecise"))
-        }
+        if (item.type == "weapon")
+        {
+          // Prefill dialog according to qualities/flaws
+          if (item.properties.qualities.includes(game.i18n.localize("PROPERTY.Accurate"))) {
+            modifier += 10;
+            tooltip.push(game.i18n.localize("PROPERTY.Accurate"))
+          }
 
+          if (item.properties.qualities.includes(game.i18n.localize("PROPERTY.Precise")) && game.user.targets.size) {
+            successBonus += 1;
+            tooltip.push(game.i18n.localize("PROPERTY.Precise"))
+
+          }
+          if (item.properties.flaws.includes(game.i18n.localize("PROPERTY.Imprecise")) && game.user.targets.size) {
+            slBonus -= 1;
+            tooltip.push(game.i18n.localize("PROPERTY.Imprecise"))
+          }
+        }
 
         if (attacker && attacker.testResult.weapon && attacker.testResult.weapon.properties.flaws.includes(game.i18n.localize('PROPERTY.Slow')))
         {
@@ -4303,8 +4309,14 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
           tooltip.push(game.i18n.localize('CHAT.TestModifiers.SlowDefend'))
         }
 
+        if (attacker && attacker.testResult.weapon && attacker.testResult.weapon.properties.qualities.includes(game.i18n.localize('PROPERTY.Wrap')))
+        {
+          slBonus -= 1
+          tooltip.push(game.i18n.localize('CHAT.TestModifiers.WrapDefend'))
+        }
+
         //Fast Weapon Property
-        if (attacker && attacker.testResult.weapon && attacker.testResult.weapon.properties.qualities.includes(game.i18n.localize('PROPERTY.Fast')) && item.attackType == "melee" && !item.properties.qualities.includes(game.i18n.localize('PROPERTY.Fast'))) {
+        if (attacker && attacker.testResult.weapon && attacker.testResult.weapon.properties.qualities.includes(game.i18n.localize('PROPERTY.Fast')) && item.type == "weapon" && item.attackType == "melee" && !item.properties.qualities.includes(game.i18n.localize('PROPERTY.Fast'))) {
           tooltip.push(game.i18n.localize('CHAT.TestModifiers.FastWeapon'))
           modifier += -10;
         }
@@ -4312,12 +4324,11 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
       }
       catch (e) { // If something went wrong, default to 0 for all prefilled data
-        console.error("Something went wrong with applying weapon modifiers: " + e)
+        ui.notifications.error("Something went wrong with applying weapon modifiers: " + e)
         slBonus = 0;
         successBonus = 0;
         modifier = 0;
       }
-    }
 
     return {
       wepModifier: modifier,
@@ -4333,8 +4344,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     let modifier = 0;
 
 
-    if (game.settings.get("wfrp4e", "testAutoFill")) 
-    {
+
       try {
         let target = game.user.targets.size ? Array.from(game.user.targets)[0].actor : undefined
         let attacker
@@ -4372,12 +4382,16 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
             // Attacking a larger creature with ranged
           }
           else if (item.attackType == "ranged") {
+            let sizeModifier = 0
             if (target.data.data.details.size.value == "lrg")
-              modifier += 20
+              sizeModifier += 20
             if (target.data.data.details.size.value == "enor")
-              modifier += 40
+              sizeModifier += 40
             if (target.data.data.details.size.value == "mnst")
-              modifier += 60
+              sizeModifier += 60
+
+            modifier += sizeModifier
+            item.sizeModifier = sizeModifier
 
             if (game.wfrp4e.config.actorSizeNums[target.data.data.details.size.value] > 3)
               tooltip.push(game.i18n.localize('CHAT.TestModifiers.ShootingLarger'))
@@ -4411,7 +4425,6 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
         slBonus = 0;
         successBonus = 0;
         modifier = 0;
-      }
     }
 
 
@@ -5000,7 +5013,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
   {
     let experience = duplicate(this.data.data.details.experience)
     experience.total += amount
-    experience.log.push({reason, amount, spent: experience.spent, total : experience.total})
+    experience.log.push({reason, amount, spent: experience.spent, total : experience.total, type : "total"})
     this.update({"data.details.experience" : experience});
     ChatMessage.create({content : game.i18n.format("CHAT.ExpReceived", {amount, reason}), speaker : {alias: this.name}})
   }
@@ -5013,7 +5026,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       newTotal = this.data.data.details.experience.total
 
     let expLog = duplicate(this.data.data.details.experience.log || []) 
-    expLog.push({amount, reason, spent:  newSpent, total : newTotal});
+    expLog.push({amount, reason, spent:  newSpent, total : newTotal, type : newSpent ? "spent" : "total"});
     return expLog
   }
 

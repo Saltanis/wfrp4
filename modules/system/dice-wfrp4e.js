@@ -130,6 +130,18 @@ export default class DiceWFRP {
       if (testData.roll <= 5 && SL < 1)
         SL = 1;
 
+
+      // If size modifiers caused a success, SL becomes 0
+      if (testData.extra.weapon && testData.extra.weapon.sizeModifier)
+      {
+        let unmodifiedTarget = targetNum - testData.extra.weapon.sizeModifier
+        if (testData.roll > unmodifiedTarget)
+        {
+          SL = 0;
+          testData.extra.other.push(game.i18n.localize("ROLL.SizeCausedSuccess"))
+        }
+      }
+
       switch (Math.abs(Number(SL))) {
         case 6:
           description = game.i18n.localize("ROLL.AstoundingSuccess")
@@ -501,6 +513,15 @@ export default class DiceWFRP {
       // Optional Rule: If SL in extended test is -/+0, counts as -/+1
       if (Number(SL) == 0 && game.settings.get("wfrp4e", "extendedTests"))
         SL = -1;
+
+      // Optional Rule: If SL in a channel attempt SL is negative, set SL to 0
+      // This is tested after the previous rule so:
+      // SL == 0 triggers previous rule and sets SL to -1, SL == -1 triggers this rule and sets SL 0
+      // SL < 0 doesn't trigger previous rule, SL < 0 triggers this rule and sets SL 0 
+      // In both cases SL resolves to 0 as expected by this rule.
+      // "SL < 0" is used over "SL <= 0" since if previous rule isn't True SL 0 resolves no channel progress
+      if (Number(SL) < 0 && game.settings.get("wfrp4e", "channelingNegativeSLTests"))
+        SL = 0;
 
       testResults.description = game.i18n.localize("ROLL.ChannelFailed")
       // Major Miscast on fumble
