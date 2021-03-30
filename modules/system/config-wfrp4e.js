@@ -167,6 +167,8 @@ WFRP4E.skillGroup = {
 WFRP4E.talentMax = {
     "1": "1",
     "2": "2",
+    "3": "3",
+    "4": "4",
     "none": "None",
     "ws": "CHARBonus.WS",
     "bs": "CHARBonus.BS",
@@ -322,11 +324,11 @@ WFRP4E.armorTypes = {
 
 // Range Test Modifiers
 WFRP4E.rangeModifiers = {
-    "Point Blank": "Easy (+40)",
-    "Short Range": "Average (+20)",
-    "Normal": "Challenging (+0)",
-    "Long Range": "Difficult (-10)",
-    "Extreme": "Very Hard (-30)",
+    "Point Blank": "easy",
+    "Short Range": "average",
+    "Normal": "challenging",
+    "Long Range": "difficult",
+    "Extreme": "vhard",
 }
 
 // Difficulty Modifiers
@@ -866,7 +868,7 @@ WFRP4E.systemItems = {
 WFRP4E.systemEffects = {
     "enc1" : {
         label: "Encumbrance 1",
-        icon: "",
+        icon: "systems/wfrp4e/icons/effects/enc1.png",
         flags: {
             wfrp4e: {
                 "effectTrigger": "prePrepareData",
@@ -881,7 +883,7 @@ WFRP4E.systemEffects = {
     },
     "enc2" : {
         label: "Encumbrance 2",
-        icon: "",
+        icon: "systems/wfrp4e/icons/effects/enc2.png",
         flags: {
             wfrp4e: {
                 "effectTrigger": "prePrepareData",
@@ -896,7 +898,7 @@ WFRP4E.systemEffects = {
     },
     "enc3" : {
         label: "Encumbrance 3",
-        icon: "",
+        icon: "systems/wfrp4e/icons/effects/enc3.png",
         flags: {
             wfrp4e: {
                 "effectTrigger": "prePrepareData",

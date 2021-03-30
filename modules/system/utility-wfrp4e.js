@@ -191,6 +191,24 @@ export default class WFRP_Utility {
     }
   }
 
+  static getSystemEffects()
+  {
+    let systemEffects = duplicate(game.wfrp4e.config.systemEffects)
+    
+    Object.keys(systemEffects).map((key, index) => {
+      systemEffects[key].obj = "systemEffects"
+    })
+
+    let symptomEffects = duplicate(game.wfrp4e.config.symptomEffects)
+    Object.keys(symptomEffects).map((key, index) => {
+      symptomEffects[key].obj = "symptomEffects"
+    })
+
+    mergeObject(systemEffects, symptomEffects)
+
+    return systemEffects
+  }
+
   /**
    * Specialized function to find a skill that accommodates for specializations.
    * 
@@ -891,8 +909,8 @@ export default class WFRP_Utility {
         }
       }
     }
-
-    let func = new Function("args", getProperty(effect, "flags.wfrp4e.script")).bind({actor, effect})
+    let asyncFunction = Object.getPrototypeOf(async function(){}).constructor
+    let func = new asyncFunction("args", getProperty(effect, "flags.wfrp4e.script")).bind({actor, effect})
     func({actor})
   }
 
@@ -901,7 +919,8 @@ export default class WFRP_Utility {
     let item = actor.items.get(itemId);
     let effect = item.getEmbeddedEntity("ActiveEffect", effectId)
 
-    let func = new Function("args", getProperty(effect, "flags.wfrp4e.script")).bind({actor, effect, item})
+    let asyncFunction = Object.getPrototypeOf(async function(){}).constructor
+    let func = new asyncFunction("args", getProperty(effect, "flags.wfrp4e.script")).bind({actor, effect, item})
     func()
   }
 

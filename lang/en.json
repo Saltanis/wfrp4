@@ -81,6 +81,10 @@
     "SETTINGS.AutoFillAdvHint" : "Automatically fill the 'modifier' box in the Roll Dialog with the bonus given by Advantage. Disable this if you house rule Advantage being used differently.",
     "SETTINGS.LimitEquippedWeapons" : "Limit Equipped Weapons",
     "SETTINGS.LimitEquippedWeaponsHint" : "Limit the number of equipped weapons - only allow 1 two handed weapon to be equipped or 2 one handed weapons.",
+    "SETTINGS.ThrowMoney" : "Throw Money",
+    "SETTINGS.ThrowMoneyHint" : "(Requires Dice So Nice) Throws coins when the payment/credit system is used.",
+    "SETTINGS.RangeAutoCalculation" : "Range Modifier Auto Calculation",
+    "SETTINGS.RangeAutoCalculationHint" :  "Prefill the roll dialog with a modifier based on the distance between tokens.",
 
     "SHEET.Close" : "Close",
     "SHEET.Configure" : "Configure Sheet",
@@ -631,6 +635,7 @@
     "MARKET.CreditToUser": "The amount of money {initialAmount} is sent to user {userName}.",
     "MARKET.NotifyNoActor": "No Character is selected or associated with the current user",
     "MARKET.NotifyUserMustBePlayer": "Must be a player to click on PAY",
+    "MARKET.ItemAdded" : "{item} added to {actor}",
 
     "WFRP4E.TrappingType.Weapon" : "Weapons",
     "WFRP4E.TrappingType.Armour" : "Armour",
@@ -728,6 +733,7 @@
     "NAME.Size" : "Size",
     "NAME.Ward" : "Ward",
     "NAME.Unstable" : "Unstable",
+    "NAME.Infighter" : "In-fighter",
     "SPEC.Tiny" : "Tiny",
     "SPEC.Little" : "Little",
     "SPEC.Small" : "Small",

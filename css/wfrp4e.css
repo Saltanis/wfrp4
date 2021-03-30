@@ -5024,6 +5024,10 @@
         color: darkblue
       }
 
+      .app.window-app.sheet.wfrp4e.actor .item-damaged {
+        color: darkred
+      }
+
        #extended-tests-list .inventory-list .item .item-controls,
         .app.window-app.sheet.wfrp4e.actor .tab.skills.active .skill-section .inventory-list .item .item-controls {
         padding: 2px 0px 0px 0px;
@@ -15999,6 +16003,10 @@ box-shadow: none;
     font-size: 14px;
  }
 
+#calendar-events-form {
+  color: var(--actor-input-color);
+}
+
 .calendar-form-container {
   background: none !important;
 }
@@ -16174,7 +16182,6 @@ hr,
   padding: 4px 3px;
   border: 1px solid #5d513e;
   background: #080808;
-  width: 100px;
 }
 #dd-importer label{
   width: 140px;
@@ -16271,6 +16278,9 @@ hr,
     background: #290a0ad9 !important; 
     color: #d6d6d6 !important;
   }
+.quest-preview {
+    color: var(--actor-input-color);
+}
 
 
 .calendar-form-container #calendar-form-cDay-input,

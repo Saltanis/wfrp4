@@ -332,11 +332,21 @@ export default function() {
     game.settings.register("wfrp4e", "weaponLength", {
       name: "SETTINGS.WeaponLength",
       hint: "SETTINGS.WeaponLengthHint",
-      scope: "client",
+      scope: "world",
       config: true,
-      default: false,
+      default: true,
       type: Boolean
     });
+
+    game.settings.register("wfrp4e", "rangeAutoCalculation", {
+      name: "SETTINGS.RangeAutoCalculation",
+      hint: "SETTINGS.RangeAutoCalculationHint",
+      scope: "world",
+      config: true,
+      default: true,
+      type: Boolean
+    });
+
 
     game.settings.register("wfrp4e", "playerBrowser", {
       name: "SETTINGS.PlayerBrowser",
@@ -365,6 +375,18 @@ export default function() {
       default: true,
       type: Boolean
     });
+
+
+    game.settings.register("wfrp4e", "throwMoney", {
+      name: "SETTINGS.ThrowMoney",
+      hint: "SETTINGS.ThrowMoneyHint",
+      scope: "world",
+      config: true,
+      default: true,
+      type: Boolean
+    });
+
+
 
     game.settings.register("wfrp4e", "dangerousCrits", {
       name: "SETTINGS.DangerousCrits",

@@ -5,8 +5,6 @@ import OpposedWFRP from "../system/opposed-wfrp4e.js";
 import WFRP_Audio from "../system/audio-wfrp4e.js";
 import RollDialog from "../apps/roll-dialog.js";
 
-import token from "../hooks/token.js";
-
 /**
  * Provides the main Actor data computation and organization.
  *
@@ -171,9 +169,17 @@ export default class ActorWfrp4e extends Actor {
       this.prepareVehicle()
 
     if (this.data.type != "vehicle")
+    {
       this.prepareNonVehicle()
+    }
 
     this.runEffects("prepareData", { actor: this })
+
+    if (this.data.type != "vehicle")
+    {
+      if(game.actors) // Only check system effects if past this isn't an on-load prepareData
+        this.checkSystemEffects()
+    }
 
   }
 
@@ -287,6 +293,7 @@ export default class ActorWfrp4e extends Actor {
       else if (canvas) {
         this.getActiveTokens().forEach(t => t.update(tokenData));
       }
+      delete tokenData._id
       mergeObject(data.token, tokenData, { overwrite: true })
     }
 
@@ -758,6 +765,7 @@ export default class ActorWfrp4e extends Actor {
         size: this.data.data.details.size.value,
         champion: !!this.has(game.i18n.localize("NAME.Champion")),
         riposte: !!this.has(game.i18n.localize("NAME.Riposte"), "talents"),
+        infighter : !!this.has(game.i18n.localize("NAME.Infighter"), "talents"),
         resolute: this.data.flags.resolute || 0,
         options: options
       }
@@ -2504,7 +2512,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       let totalEnc = 0;
       for (let section in inventory) {
         for (let item of inventory[section].items) {
-          totalEnc += item.data.encumbrance.value * item.data.quantity.value
+          totalEnc += item.data.encumbrance.value
         }
       }
 
@@ -2534,7 +2542,8 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       }
 
       if (enc.encPct + enc.carryPct > 100) {
-        enc.message = `Handling Tests suffer a -${Math.floor(((enc.encPct + enc.carryPct) - 100) / 10)} SL penalty.`
+        enc.penalty = Math.floor(((enc.encPct + enc.carryPct) - 100) / 10)
+        enc.message = `Handling Tests suffer a -${enc.penalty} SL penalty.`
         enc.overEncumbered = true;
           
       }
@@ -2657,6 +2666,15 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
           talent["numMax"] = 2;
           break;
 
+        case '3':
+          talent["numMax"] = 3;
+          break;
+  
+        case '4':
+          talent["numMax"] = 4;
+          break;
+
+
         case 'none':
           talent["numMax"] = "-";
           break;
@@ -2721,11 +2739,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
       weapon.damage = this.calculateRangeOrDamage(weapon.data.damage.value) + (actorData.flags.meleeDamageIncrease || 0);
 
-      // Very poor wording, but if the weapon has suffered damage (weaponDamage), subtract that amount from meleeValue (melee damage the weapon deals)
-      if (weapon.data.weaponDamage)
-        weapon.damage -= weapon.data.weaponDamage
-      else
-        weapon.data.weaponDamage = 0;
+
     }
     // Ranged Damage calculation
     else {
@@ -2733,12 +2747,14 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
       // Turn ranged damage formula into numeric value, same as melee                 Ranged damage increase flag comes from Accurate Shot
       weapon.damage = this.calculateRangeOrDamage(weapon.data.damage.value) + (actorData.flags.rangedDamageIncrease || 0)
-      // Very poor wording, but if the weapon has suffered damage (weaponDamage), subtract that amount from rangedValue (ranged damage the weapon deals)
-      if (weapon.data.weaponDamage)
-        weapon.damage -= weapon.data.weaponDamage
-      else
-        weapon.data.weaponDamage = 0;
+
     }
+
+    // Very poor wording, but if the weapon has suffered damage (weaponDamage), subtract that amount from meleeValue (melee damage the weapon deals)
+    if (weapon.data.weaponDamage)
+      weapon.damage -= weapon.data.weaponDamage
+    else
+      weapon.data.weaponDamage = 0;
 
     weapon.damageDice = weapon.data.damage.dice
 
@@ -2754,6 +2770,8 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       // Send to _prepareWeaponWithAmmo for further calculation (Damage/range modifications based on ammo)
       this._prepareWeaponWithAmmo(weapon);
     }
+
+    weapon.rangeBands = this.calculateRangeBands(weapon)
 
     if (weapon.properties.special)
       weapon.properties.special = weapon.data.special.value;
@@ -2785,6 +2803,38 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     weapon.prepared = true;
     this.runEffects("prepareItem", {item : weapon})
     return weapon;
+  }
+
+  calculateRangeBands(weapon)
+  {
+    if (!weapon.range)
+      return
+
+    let range = weapon.range
+    let rangeBands = {}
+
+    rangeBands["Point Blank"] = {
+      range : [0, Math.ceil(range / 10)],
+      modifier : game.wfrp4e.config.difficultyModifiers[game.wfrp4e.config.rangeModifiers["Point Blank"]]
+    }
+    rangeBands["Short Range"] = {
+      range : [Math.ceil(range / 10) + 1,Math.ceil(range / 2)],
+      modifier : game.wfrp4e.config.difficultyModifiers[game.wfrp4e.config.rangeModifiers["Short Range"]]
+    }
+    rangeBands["Normal"]      = {
+      range : [Math.ceil(range / 2) + 1,range],
+      modifier : game.wfrp4e.config.difficultyModifiers[game.wfrp4e.config.rangeModifiers["Normal"]]
+    }
+    rangeBands["Long Range"]  = {
+      range : [range + 1,range * 2],
+      modifier : game.wfrp4e.config.difficultyModifiers[game.wfrp4e.config.rangeModifiers["Long Range"]]
+    }
+    rangeBands["Extreme"]     = {
+      range : [range * 2 + 1,range * 3],
+      modifier : game.wfrp4e.config.difficultyModifiers[game.wfrp4e.config.rangeModifiers["Extreme"]]
+    }
+
+    return rangeBands
   }
 
   prepareWeaponMount(weapon) {
@@ -2824,36 +2874,57 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
           armor.data.currentAP[apLoc] = armor.data.maxAP[apLoc];
         }
       }
+
+      armor.damaged = {}
+
       // If the armor protects a certain location, add the AP value of the armor to the AP object's location value
       // Then pass it to addLayer to parse out important information about the armor layer, namely qualities/flaws
       if (armor.data.maxAP.head > 0) {
         armor["protectsHead"] = true;
         AP.head.value += armor.data.currentAP.head;
+        if (armor.data.currentAP.head < armor.data.maxAP.head)
+          armor.damaged.head = true
+
         WFRP_Utility.addLayer(AP, armor, "head")
       }
       if (armor.data.maxAP.body > 0) {
         armor["protectsBody"] = true;
         AP.body.value += armor.data.currentAP.body;
+        if (armor.data.currentAP.body < armor.data.maxAP.body)
+          armor.damaged.body = true
+
         WFRP_Utility.addLayer(AP, armor, "body")
       }
       if (armor.data.maxAP.lArm > 0) {
         armor["protectslArm"] = true;
         AP.lArm.value += armor.data.currentAP.lArm;
+        if (armor.data.currentAP.lArm < armor.data.maxAP.lArm)
+          armor.damaged.lArm = true
+
         WFRP_Utility.addLayer(AP, armor, "lArm")
       }
       if (armor.data.maxAP.rArm > 0) {
         armor["protectsrArm"] = true;
         AP.rArm.value += armor.data.currentAP.rArm;
+        if (armor.data.currentAP.rArm < armor.data.maxAP.rArm)
+          armor.damaged.rArm = true
+
         WFRP_Utility.addLayer(AP, armor, "rArm")
       }
       if (armor.data.maxAP.lLeg > 0) {
         armor["protectslLeg"] = true;
         AP.lLeg.value += armor.data.currentAP.lLeg;
+        if (armor.data.currentAP.lLeg < armor.data.maxAP.lLeg)
+          armor.damaged.lLeg = true
+
         WFRP_Utility.addLayer(AP, armor, "lLeg")
       }
       if (armor.data.maxAP.rLeg > 0) {
         armor["protectsrLeg"] = true
         AP.rLeg.value += armor.data.currentAP.rLeg;
+        if (armor.data.currentAP.rLeg < armor.data.maxAP.rLeg)
+          armor.damaged.rLeg = true
+
         WFRP_Utility.addLayer(AP, armor, "rLeg")
       }
     }
@@ -3090,8 +3161,8 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       // Set initial overcast option to type assigned, value is arbitrary, characcteristics is based on actor data, SL is a placeholder for tests
       if (item.data.overcast.initial.type == "value")
       { 
-        other.initial = parseInt(item.data.overcast.initial.value) || 1
-        other.current = parseInt(item.data.overcast.initial.value) || 1      
+        other.initial = parseInt(item.data.overcast.initial.value) || 0
+        other.current = parseInt(item.data.overcast.initial.value) || 0      
       }
       else if (item.data.overcast.initial.type == "characteristic")
       {
@@ -3250,7 +3321,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
     if (isMagicMissile) // If it's a magic missile, damage includes willpower bonus
     {
-      formula += "+ willpower bonus"
+      formula += "+ " + actorData.data.characteristics["wp"].bonus
     }
 
     // Iterate through characteristics
@@ -4321,6 +4392,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
           modifier += -10;
         }
 
+        modifier += this.rangePrefillModifiers(item, options, tooltip);
 
       }
       catch (e) { // If something went wrong, default to 0 for all prefilled data
@@ -4338,12 +4410,49 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
   }
 
 
+  rangePrefillModifiers(weapon, options, tooltip = []) {
+    let modifier = 0;
+
+    let token
+    if (this.isToken)
+      token = this.token
+    else
+      token = this.getActiveTokens()[0]
+
+    if (!game.settings.get("wfrp4e", "rangeAutoCalculation") || !token || !game.user.targets.size == 1 || !weapon.rangeBands)
+      return 0
+    
+    let target = Array.from(game.user.targets)[0]
+
+    let distance = canvas.grid.measureDistance(token, target)
+
+    let currentBand
+
+    for (let band in weapon.rangeBands)
+    {
+      if (distance >= weapon.rangeBands[band].range[0] && distance <= weapon.rangeBands[band].range[1])
+      {
+        currentBand = band;
+        break;
+      }
+    }
+
+    modifier += weapon.rangeBands[currentBand]?.modifier || 0
+
+
+    if (modifier)
+    {
+      tooltip.push(`${game.i18n.localize("Range")} - ${currentBand}`)
+    }
+    return modifier
+  }
+
+
+
   sizePrefillModifiers(item, type, options, tooltip) {
     let slBonus = 0;
     let successBonus = 0;
     let modifier = 0;
-
-
 
       try {
         let target = game.user.targets.size ? Array.from(game.user.targets)[0].actor : undefined
@@ -5075,7 +5184,80 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     return effect
   }
 
+
+  checkSystemEffects()
+  {
+    let encumbrance = this.data.encumbrance.state
+    let state
+
+    if (encumbrance > 3) 
+    {
+      state = "enc3"
+      if (!this.hasSystemEffect(state))
+      {
+        this.addSystemEffect(state)
+        return
+      }
+      this.removeSystemEffect("enc2")
+      this.removeSystemEffect("enc1")
+    }
+    else if  (encumbrance > 2) 
+    {
+      state = "enc2"
+      if (!this.hasSystemEffect(state))
+      {
+        this.addSystemEffect(state)
+        return
+      }
+      this.removeSystemEffect("enc1")
+      this.removeSystemEffect("enc3")
+    }
+    else if (encumbrance > 1)
+    {
+      state = "enc1"
+      if (!this.hasSystemEffect(state))
+      {
+        this.addSystemEffect(state)
+        return
+      }
+      this.removeSystemEffect("enc2")
+      this.removeSystemEffect("enc3")
+    }
+    else
+    {
+      this.removeSystemEffect("enc1")
+      this.removeSystemEffect("enc2")
+      this.removeSystemEffect("enc3")
+    }
+
+  }
+
+
+  addSystemEffect(key)
+  {
+    let systemEffects = game.wfrp4e.utility.getSystemEffects()
+    let effect = systemEffects[key];
+    setProperty(effect, "flags.core.statusId", key);
+    this.createEmbeddedEntity("ActiveEffect", effect)
+  }
+
+  removeSystemEffect(key)
+  {
+    let effect = this.data.effects.find(e => getProperty(e, "flags.core.statusId") == key)
+    if (effect)
+      this.deleteEmbeddedEntity("ActiveEffect", effect._id)
+  }
+
+  hasSystemEffect(key)
+  {
+    return this.hasCondition(key) // Same function so just reuse
+  }
+
+
   get isUniqueOwner() {
         return game.user.id == game.users.find(u => u.active && (this.data.permission[u.id]>=3 || u.isGM))?.id
   }
+
+
+
 }

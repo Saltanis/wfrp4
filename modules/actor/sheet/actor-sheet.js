@@ -119,11 +119,12 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     else if (this.actor.data.type=="creature")
       this.addCreatureData(sheetData.actor)
 
+    this.addConditionData(sheetData);
+
     if(this.actor.data.type!="vehicle")
     {
-      this.addConditionData(sheetData);
       this.addMountData(sheetData);
-      this.addSystemEffects(sheetData)
+      sheetData.systemEffects = game.wfrp4e.utility.getSystemEffects();
     }
 
 
@@ -174,7 +175,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
         if (sourceItem && sourceItem.data.type == "disease" && !game.user.isGM)
           e.data.sourcename = "???";
       }
-      if (e.getFlag("core", "statusId")) data.actor.conditions.push(e.data)
+      if (CONFIG.statusEffects.map(i => i.id).includes(e.getFlag("core", "statusId"))) data.actor.conditions.push(e.data)
       else if (e.data.disabled) data.actor.disabledEffects.push(e.data)
       else if (e.isTemporary) data.actor.tempEffects.push(e.data)
       else data.actor.passiveEffects.push(e.data);
@@ -186,23 +187,6 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
     data.actor.appliedEffects = this.actor.data.effects.filter(e => ((getProperty(e, "flags.wfrp4e.effectApplication") == "apply" || getProperty(e, "flags.wfrp4e.effectTrigger") == "invoke") && !e.origin))
   }
-
-  addSystemEffects(data)
-  {
-    data.systemEffects = duplicate(game.wfrp4e.config.systemEffects)
-    
-    Object.keys(data.systemEffects).map((key, index) => {
-      data.systemEffects[key].obj = "systemEffects"
-    })
-
-    let symptomEffects = duplicate(game.wfrp4e.config.symptomEffects)
-    Object.keys(symptomEffects).map((key, index) => {
-      symptomEffects[key].obj = "symptomEffects"
-    })
-
-    mergeObject(data.systemEffects, symptomEffects)
-
-    }
 
   _consolidateEffects(effects)
   {
@@ -575,15 +559,19 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     // Skill Tests (right click to open skill sheet)
     html.find('.skill-total, .skill-select').mousedown(ev => {
       let itemId = this._getItemId(ev);
-      let skill = this.actor.items.find(i => i.data._id == itemId);
 
       if (ev.button == 0)
-        this.actor.setupSkill(skill.data).then(setupData => {
+      {
+        let skill = this.actor.data.items.find(i => i._id == itemId);
+        this.actor.setupSkill(skill).then(setupData => {
           this.actor.basicTest(setupData)
         });
-
+      }
       else if (ev.button == 2)
+      {
+        let skill = this.actor.items.get(itemId);
         skill.sheet.render(true);
+      }
     })
 
 
@@ -768,6 +756,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
         armourTraits = duplicate(armourTraits);
       let armourItems = this.actor.data.armour;
       let armourToDamage;
+      let usedTrait = false;
 
       for (let armourTrait of armourTraits)
       {
@@ -776,7 +765,6 @@ export default class ActorSheetWfrp4e extends ActorSheet {
           armourTrait.APdamage = { head: 0, body: 0, lArm: 0, rArm: 0, lLeg: 0, rLeg: 0 };
 
         // Used trait is a flag to denote whether the trait was damaged or not. If it was not, armor is damaged instead
-        let usedTrait = false;;
         if (armourTrait) {
           // Left click decreases APdamage (makes total AP increase)
           if (ev.button == 0) {
@@ -810,15 +798,15 @@ export default class ActorSheetWfrp4e extends ActorSheet {
         for (let a of armourItems) {
           if (ev.button == 2) {
             // If damaging the item, only select items that have AP at the location
-            if (a.data.data.maxAP[location] != 0 && a.data.data.currentAP[location] != 0) {
-              armourToDamage = duplicate(a.data);
+            if (a.data.maxAP[location] != 0 && a.data.currentAP[location] != 0) {
+              armourToDamage = duplicate(a);
               break;
             }
           }
           else if (ev.button == 0) {
             // If repairing, select only items that *should* have AP there, ie has a maxAP, and isn't at maxAP
-            if (a.data.data.maxAP[location] != 0 && a.data.data.currentAP[location] != -1 && a.data.data.currentAP[location] != a.data.data.maxAP[location]) {
-              armourToDamage = duplicate(a.data);
+            if (a.data.maxAP[location] != 0 && a.data.currentAP[location] != -1 && a.data.currentAP[location] != a.data.maxAP[location]) {
+              armourToDamage = duplicate(a);
               break;
             }
           }
@@ -2019,15 +2007,16 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     let classes = $(event.currentTarget);
     let expansionText = "";
 
+    let item = this.actor.data.items.find(i => i._id == li.attr("data-item-id"))
     // Breakdown weapon range bands for easy reference (clickable, see below)
     if (classes.hasClass("weapon-range")) {
-      let range = parseInt(event.target.text);
       expansionText =
-        `<a class="range-click" data-range="easy">0 yd - ${Math.ceil(range / 10)} ${game.i18n.localize("yds")}: ${ game.wfrp4e.config.rangeModifiers["Point Blank"]}</a><br>
-          <a class="range-click" data-range="average">${(Math.ceil(range / 10) + 1)} ${game.i18n.localize("yds")} - ${Math.ceil(range / 2)} ${game.i18n.localize("yds")}: ${ game.wfrp4e.config.rangeModifiers["Short Range"]}</a><br>
-          <a class="range-click" data-range="challenging">${(Math.ceil(range / 2) + 1)} ${game.i18n.localize("yds")} - ${range} yds: ${ game.wfrp4e.config.rangeModifiers["Normal"]}</a><br>
-          <a class="range-click" data-range="difficult">${(range + 1)} ${game.i18n.localize("yds")} - ${range * 2} ${game.i18n.localize("yds")}: ${ game.wfrp4e.config.rangeModifiers["Long Range"]}</a><br>
-          <a class="range-click" data-range="vhard">${(range * 2 + 1)} ${game.i18n.localize("yds")} - ${range * 3} ${game.i18n.localize("yds")}: ${ game.wfrp4e.config.rangeModifiers["Extreme"]}</a><br>`;
+         `<a class="range-click" data-range="${game.wfrp4e.config.rangeModifiers["Point Blank"]}">${item.rangeBands["Point Blank"].range[0]} ${game.i18n.localize("yds")} - ${item.rangeBands["Point Blank"].range[1]} ${game.i18n.localize("yds")}: ${ game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Point Blank"]]}</a><br>
+          <a class="range-click" data-range="${game.wfrp4e.config.rangeModifiers["Short Range"]}">${item.rangeBands["Short Range"].range[0]} ${game.i18n.localize("yds")} - ${item.rangeBands["Short Range"].range[1]} ${game.i18n.localize("yds")}: ${ game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Short Range"]]}</a><br>
+          <a class="range-click" data-range="${game.wfrp4e.config.rangeModifiers["Normal"]}">${item.rangeBands["Normal"].range[0]} ${game.i18n.localize("yds")} - ${item.rangeBands["Normal"].range[1]} ${game.i18n.localize("yds")}: ${ game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Normal"]]}</a><br>
+          <a class="range-click" data-range="${game.wfrp4e.config.rangeModifiers["Long Range"]}">${item.rangeBands["Long Range"].range[0]} ${game.i18n.localize("yds")} - ${item.rangeBands["Long Range"].range[1]} ${game.i18n.localize("yds")}: ${ game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Long Range"]]}</a><br>
+          <a class="range-click" data-range="${game.wfrp4e.config.rangeModifiers["Extreme"]}">${item.rangeBands["Extreme"].range[0]} ${game.i18n.localize("yds")} - ${item.rangeBands["Extreme"].range[1]} ${game.i18n.localize("yds")}: ${ game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Extreme"]]}</a><br>
+          `
     }
     // Expand the weapon's group description
     else if (classes.hasClass("weapon-group")) {
@@ -2058,8 +2047,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       div.on("click", ".range-click", ev => {
         let difficulty = $(ev.currentTarget).attr("data-range")
 
-        let itemId = $(event.currentTarget).parents(".item").attr("data-item-id");
-        let weapon = duplicate(this.actor.getEmbeddedEntity("OwnedItem", itemId))
+        let weapon = duplicate(item)
         if (weapon)
           this.actor.setupWeapon(duplicate(weapon), { absolute: { difficulty: difficulty }}).then(setupData => {
             this.actor.weaponTest(setupData)
