@@ -1165,7 +1165,7 @@ WFRP4E.systemEffects = {
     },
     "dualwielder" : {
         label: "Dual Wielder",
-        icon: "",
+        icon: "modules/wfrp4e-core/icons/talents/dual-wielder.png",
         flags: {
             wfrp4e: {
                 "effectTrigger": "prefillDialog",
@@ -1173,6 +1173,19 @@ WFRP4E.systemEffects = {
                 "script": `
                     if (this.actor.data.flags.oppose)
                         args.prefillModifiers.modifier -= 10` 
+            }
+        }
+    },
+    "stinkingdrunk1" : {
+        label: "Marienburgher's Courage",
+        icon: "",
+        flags: {
+            wfrp4e: {
+                "effectTrigger": "prefillDialog",
+                "effectApplication": "actor",
+                "script": `
+                    if (args.type=="skill" && args.item.name=="Cool")
+                        args.prefillModifiers.modifier += 20` 
             }
         }
     }
