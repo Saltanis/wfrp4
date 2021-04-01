@@ -345,22 +345,22 @@ WFRP4E.difficultyModifiers = {
 // Difficulty Labels
 WFRP4E.difficultyLabels = {
 
-    "veasy": "Very Easy (+60)",
-    "easy": "Easy (+40)",
-    "average": "Average (+20)",
-    "challenging": "Challenging (+0)",
-    "difficult": "Difficult (-10)",
-    "hard": "Hard (-20)",
-    "vhard": "Very Hard (-30)"
+    "veasy": "Bardzo Łatwy (+60)",
+    "easy": "Łatwy (+40)",
+    "average": "Przeciętny (+20)",
+    "challenging": "Wymagający (+0)",
+    "difficult": "Problematyczny (-10)",
+    "hard": "Trudny (-20)",
+    "vhard": "Bardzo Trudny (-30)"
 }
 
 WFRP4E.locations = {
-    "head": "Head",
-    "body": "Body",
-    "rArm": "Right Arm",
-    "lArm": "Left Arm",
-    "rLeg": "Right Leg",
-    "lLeg": "Left Leg",
+    "head": "Głowa",
+    "body": "Korpus",
+    "rArm": "Prawe ramię (lub lewe, w przypadku, praworęcznych)",
+    "lArm": "Lewe ramię (lub prawe, w przypadku, leworęcznych)",
+    "rLeg": "Prawa noga",
+    "lLeg": "Lewa noga",
 }
 
 // Trapping Availability
@@ -434,19 +434,19 @@ WFRP4E.tokenSizes = {
 
 // Condition Types
 WFRP4E.magicLores = {
-    "petty": "Petty",
-    "beasts": "Beasts",
-    "death": "Death",
-    "fire": "Fire",
-    "heavens": "Heavens",
-    "metal": "Metal",
-    "life": "Life",
-    "light": "Light",
-    "shadow": "Shadow",
-    "hedgecraft": "Hedgecraft",
-    "witchcraft": "Witchcraft",
-    "daemonology": "Daemonology",
-    "necromancy": "Necromancy",
+    "petty": "Prosta",
+    "beasts": "Bestii",
+    "death": "Śmierci",
+    "fire": "Ognia",
+    "heavens": "Niebios",
+    "metal": "Metalu",
+    "life": "Życia",
+    "light": "Światła",
+    "shadow": "Cieni",
+    "hedgecraft": "Guślarstwa",
+    "witchcraft": "Czarownictwa",
+    "daemonology": "Demonologii",
+    "necromancy": "Nekromancji",
     "nurgle": "Nurgle",
     "slaanesh": "Slaanesh",
     "tzeentch": "Tzeentch",
@@ -476,13 +476,13 @@ WFRP4E.magicWind = {
 
 // Types of prayers
 WFRP4E.prayerTypes = {
-    "blessing": "Blessing",
-    "miracle": "Miracle"
+    "blessing": "Błogosławieństwo",
+    "miracle": "Cud"
 }
 
 WFRP4E.mutationTypes = {
-    "physical": "Physical",
-    "mental": "Mental"
+    "physical": "Fizyczna",
+    "mental": "Psychiczna"
 }
 
 
@@ -709,8 +709,8 @@ WFRP4E.moneyValues = {
 
 WFRP4E.hitLocationTables = {
     "hitloc": "Standard",
-    "snake": "Snake-Like",
-    "spider": "Spider-Like"
+    "snake": "Wężo-Podobny",
+    "spider": "Pajęczak"
 }
 
 WFRP4E.extendedTestCompletion = {
@@ -752,7 +752,7 @@ WFRP4E.systemItems = {
         }
     },
     improv : {
-          name: "Improvised Weapon",
+        name: "Broń Improwizowana",
           type: "weapon",
           effects : [],
           data: {
@@ -761,7 +761,7 @@ WFRP4E.systemItems = {
             weaponGroup: { value: "basic" },
             twohanded: { value: false },
             qualities: { value: "" },
-            flaws: { value: "Undamaging" },
+            flaws: { value: "Tępa" },
             special: { value: "" },
             range: { value: "" },
             ammunitionGroup: { value: "" },
@@ -769,7 +769,7 @@ WFRP4E.systemItems = {
           }
     },
     stomp : {
-        name: "Stomp",
+        name: "Tupnięcie",
         type: "trait",
           effects : [],
           data: {
@@ -778,7 +778,7 @@ WFRP4E.systemItems = {
         }
     },
     unarmed : {
-          name: "Unarmed",
+        name: "Pięści i Kopniaki",
           type: "weapon",
           effects : [],
           data: {
@@ -787,7 +787,7 @@ WFRP4E.systemItems = {
             weaponGroup: { value: "brawling" },
             twohanded: { value: false },
             qualities: { value: "" },
-            flaws: { value: "Undamaging" },
+            flaws: { value: "Tępa" },
             special: { value: "" },
             range: { value: "" },
             ammunitionGroup: { value: "" },
@@ -796,7 +796,7 @@ WFRP4E.systemItems = {
       },
 
     fear : {
-        name : "Fear",
+        name : "Strach",
         type : "extendedTest",
         data : {
             completion:{value: 'remove'},
@@ -806,11 +806,11 @@ WFRP4E.systemItems = {
             hide: { test: false, progress: false },
             negativePossible: { value: false },
             SL: { current: 0, target: 1 },
-            test: { value: 'Cool' }
+            test: { value: 'Opanowanie' }
         },
         effects:
             [{
-                label: "Fear",
+                label: "Strach",
                 icon: "systems/wfrp4e/icons/conditions/fear.png",
                 transfer: true,
                 flags: {
@@ -820,14 +820,14 @@ WFRP4E.systemItems = {
                     wfrp4e: {
                         "effectTrigger": "dialogChoice",
                         "effectData": {
-                            "description": "Tests to affect",
+                            "description": "Wpływa na testy",
                             "slBonus": "-1"
                         },
                         "script": `
                             if (this.flags.wfrp4e.fearName)
                                 this.flags.wfrp4e.effectData.description += " " + this.flags.wfrp4e.fearName
                             else
-                                this.flags.wfrp4e.effectData.description += " the source of fear"
+                                this.flags.wfrp4e.effectData.description += " źródło strachu"
                         `}
                 }
             }
@@ -837,7 +837,7 @@ WFRP4E.systemItems = {
 
     terror: {
 
-        label: "Terror",
+        label: "Groza",
         icon: "systems/wfrp4e/icons/conditions/terror.png",
         transfer: true,
         flags: {
@@ -846,7 +846,7 @@ WFRP4E.systemItems = {
                 "effectApplication": "actor",
                 "terrorValue": 1,
                 "script": `
-                    args.actor.setupSkill("Cool").then(setupData =>{
+                    args.actor.setupSkill("Opanowanie").then(setupData =>{
                     args.actor.basicTest(setupData).then(test => {
                         if (test.result.result == "failure")
                         {
@@ -867,7 +867,7 @@ WFRP4E.systemItems = {
 
 WFRP4E.systemEffects = {
     "enc1" : {
-        label: "Encumbrance 1",
+        label: "Przeciążenie 1",
         icon: "systems/wfrp4e/icons/effects/enc1.png",
         flags: {
             wfrp4e: {
@@ -882,7 +882,7 @@ WFRP4E.systemEffects = {
         }
     },
     "enc2" : {
-        label: "Encumbrance 2",
+        label: "Przeciążenie 2",
         icon: "systems/wfrp4e/icons/effects/enc2.png",
         flags: {
             wfrp4e: {
@@ -897,7 +897,7 @@ WFRP4E.systemEffects = {
         }
     },
     "enc3" : {
-        label: "Encumbrance 3",
+        label: "Przeciążenie 3",
         icon: "systems/wfrp4e/icons/effects/enc3.png",
         flags: {
             wfrp4e: {
@@ -909,7 +909,7 @@ WFRP4E.systemEffects = {
         }
     },
     "cold1" : {
-        label: "Cold Exposure 1",
+        label: "Wystawienie na zimno 1",
         icon: "",
         changes : [
             {key : "data.characteristics.bs.modifier", mode: 2, value: -10},
@@ -925,7 +925,7 @@ WFRP4E.systemEffects = {
         }
     },
     "cold2" : {
-        label: "Cold Exposure 2",
+        label: "Wystawienie na zimno 2",
         icon: "",
         changes : [
             {key : "data.characteristics.bs.modifier", mode: 2, value: -10},
@@ -951,7 +951,7 @@ WFRP4E.systemEffects = {
         }
     },
     "cold3" : {
-        label: "Cold Exposure 3",
+        label: "Wystawienie na zimno 3",
         icon: "",
         flags: {
             wfrp4e: {
@@ -967,13 +967,13 @@ WFRP4E.systemEffects = {
                         this.actor.addCondition("unconscious")
                     }
                     this.actor.modifyWounds(-damage)
-                    ui.notifications.notify("Took " + damage + " Damage")
+                    ui.notifications.notify("Otrzymano " + damage + " punktów Obrażeń")
                 `
             }
         }
     },
     "heat1" : {
-        label: "Heat Exposure 1",
+        label: "Wystawienie na gorąco 1",
         icon: "",
         changes : [
             {key : "data.characteristics.int.modifier", mode: 2, value: -10},
@@ -989,7 +989,7 @@ WFRP4E.systemEffects = {
         }
     },
     "heat2" : {
-        label: "Heat Exposure 2",
+        label: "Wystawienie na gorąco 2",
         icon: "",
         changes : [
             {key : "data.characteristics.bs.modifier", mode: 2, value: -10},
@@ -1015,7 +1015,7 @@ WFRP4E.systemEffects = {
         }
     },
     "heat3" : {
-        label: "Heat Exposure 3",
+        label: "Wystawienie na gorąco 3",
         icon: "",
         flags: {
             wfrp4e: {
@@ -1027,13 +1027,13 @@ WFRP4E.systemEffects = {
                     damage -= tb
                     if (damage <= 0) damage = 1
                     this.actor.modifyWounds(-damage)
-                    ui.notifications.notify("Took " + damage + " Damage")
+                    ui.notifications.notify("Otrzymano " + damage + " punktów Obrażeń")
                 `
             }
         }
     },
     "thirst1" : {
-        label: "Thirst 1",
+        label: "Pragnienie 1",
         icon: "",
         changes : [
             {key : "data.characteristics.int.modifier", mode: 2, value: -10},
@@ -1050,7 +1050,7 @@ WFRP4E.systemEffects = {
         }
     },
     "thirst2" : {
-        label: "Thirst 2+",
+        label: "Pragnienie 2+",
         icon: "",
         changes : [
             {key : "data.characteristics.bs.modifier", mode: 2, value: -10},
@@ -1077,13 +1077,13 @@ WFRP4E.systemEffects = {
                 damage -= tb
                 if (damage <= 0) damage = 1
                 this.actor.modifyWounds(-damage)
-                ui.notifications.notify("Took " + damage + " Damage")
+                ui.notifications.notify("Otrzymano " + damage + " punktów Obrażeń")
             `
             }
         }
     },
     "starvation1" : {
-        label: "Starvation 1",
+        label: "Głód 1",
         icon: "",
         changes : [
             {key : "data.characteristics.s.modifier", mode: 2, value: -10},
@@ -1100,7 +1100,7 @@ WFRP4E.systemEffects = {
         }
     },
     "starvation2" : {
-        label: "Starvation 2",
+        label: "Głód 2",
         icon: "",
         changes : [
             {key : "data.characteristics.bs.modifier", mode: 2, value: -10},
@@ -1127,13 +1127,13 @@ WFRP4E.systemEffects = {
                 damage -= tb
                 if (damage <= 0) damage = 1
                 this.actor.modifyWounds(-damage)
-                ui.notifications.notify("Took " + damage + " Damage")
+                ui.notifications.notify("Otrzymano " + damage + " punktów Obrażeń")
             `
             }
         }
     },
     "infighting" : {
-        label: "Infighting",
+        label: "Walka Kontaktowa",
         icon: "",
         flags: {
             wfrp4e: {
@@ -1144,7 +1144,7 @@ WFRP4E.systemEffects = {
         }
     },
     "defensive" : {
-        label: "On the Defensive [Skill Name]",
+        label: "Postawa defensywna: [Skill Name]",
         icon: "",
         flags: {
             wfrp4e: {
@@ -1156,15 +1156,15 @@ WFRP4E.systemEffects = {
                       return
                     if ((args.type == "skill" && args.item.name == skillName) ||
                         (args.type == "weapon" && args.item.skillToUse.name == skillName) ||
-                        (args.type == "cast" && skillName == "Language (Magick)") ||
-                        (args.type == "prayer" && skillName == "Prayer") || 
+                        (args.type == "cast" && skillName == "Język (Magiczny)") ||
+                        (args.type == "prayer" && skillName == "Modlitwa") || 
                         (args.type == "trait" && args.item.data.rollable.skill == skillName))
                         args.prefillModifiers.modifier += 20` 
             }
         }
     },
     "dualwielder" : {
-        label: "Dual Wielder",
+        label: "Dwie Bronie",
         icon: "modules/wfrp4e-core/icons/talents/dual-wielder.png",
         flags: {
             wfrp4e: {
@@ -1177,14 +1177,14 @@ WFRP4E.systemEffects = {
         }
     },
     "stinkingdrunk1" : {
-        label: "Marienburgher's Courage",
+        label: "Marienburska brawura!",
         icon: "",
         flags: {
             wfrp4e: {
                 "effectTrigger": "prefillDialog",
                 "effectApplication": "actor",
                 "script": `
-                    if (args.type=="skill" && args.item.name=="Cool")
+                    if (args.type=="skill" && args.item.name=="Opanowanie")
                         args.prefillModifiers.modifier += 20` 
             }
         }
@@ -1194,7 +1194,7 @@ WFRP4E.systemEffects = {
 
 WFRP4E.conditionScripts = {
     "ablaze" : async function (actor) {
-        let effect = actor.hasCondition("ablaze")
+        let effect = actor.hasCondition("ablaze");
         let value = effect.flags.wfrp4e.value;
 
         let leastProtectedLoc;
@@ -1211,13 +1211,13 @@ WFRP4E.conditionScripts = {
 
         let roll = new Roll(`${rollString} - ${leastProtectedValue || 0}`).roll();
 
-        let msg = `<h2>Ablaze</h2><b>Formula</b>: ${rollString}<br><b>Roll</b>: ${roll.results.splice(0, 3).join(" ")}` // Don't show AP in the roll formula
+        let msg = `<h2>Podpalenie</h2><b>Formuła</b>: ${rollString}<br><b>Rzut</b>: ${roll.results.splice(0, 3).join(" ")}` // Don't show AP in the roll formula
 
         actor.runEffects("preApplyCondition", {effect, data : {msg, roll, rollString}})
         value = effect.flags.wfrp4e.value;
         let damageMsg = (`<br>` + await actor.applyBasicDamage(roll.total, {damageType : game.wfrp4e.config.DAMAGE_TYPE.IGNORE_AP, suppressMsg : true})).split("")
         damageMsg.splice(damageMsg.length-1, 1) // Removes the parentheses and adds + AP amount.
-        msg += damageMsg.join("").concat(` + ${leastProtectedValue} AP)`)
+        msg += damageMsg.join("").concat(` + ${leastProtectedValue} PP)`)
         let messageData = game.wfrp4e.utility.chatDataSetup(msg);
         messageData.speaker = {alias: actor.data.token.name}
         actor.runEffects("applyCondition", {effect, data : {messageData}})
@@ -1225,7 +1225,7 @@ WFRP4E.conditionScripts = {
     },
     "poisoned" : async function (actor) {
         let effect = actor.hasCondition("poisoned")
-        let msg = `<h2>Poisoned</h2>`
+        let msg = `<h2>Zatrucie</h2>`
 
         actor.runEffects("preApplyCondition", {effect, data : {msg}})
         let value = effect.flags.wfrp4e.value;
@@ -1239,7 +1239,7 @@ WFRP4E.conditionScripts = {
         let effect = actor.hasCondition("bleeding")
         let bleedingAmt;
         let bleedingRoll;
-        let msg = `<h2>Bleeding</h2>`
+        let msg = `<h2>Krwawienie</h2>`
 
         actor.runEffects("preApplyCondition", {effect, data : {msg}})
         let value = effect.flags.wfrp4e.value;
@@ -1248,7 +1248,7 @@ WFRP4E.conditionScripts = {
         if (actor.data.data.status.wounds.value == 0 && !actor.hasCondition("unconscious"))
         {
             await actor.addCondition("unconscious")
-            msg += `<br><b>${actor.data.token.name}</b> falls unconscious!`
+            msg += `<br><b>${actor.data.token.name}</b> padł Nieprzytomny!`
         }
 
         if (actor.hasCondition("unconscious"))
@@ -1257,17 +1257,17 @@ WFRP4E.conditionScripts = {
             bleedingRoll = new Roll("1d100").roll().total;
             if (bleedingRoll <= bleedingAmt * 10)
             {
-                msg += `<br><b>${actor.data.token.name}</b> dies from blood loss! (Rolled ${bleedingRoll})`
+                msg += `<br><b>${actor.data.token.name}</b> umiera od utraty krwi! (Wyrzucono ${bleedingRoll})`
                 actor.addCondition("dead")
             }
             else if (bleedingRoll % 11 == 0)
             {
-                msg += `<br><b>${actor.data.token.name}'s</b> blood clots a little and loses 1 Bleeding Condition (Rolled ${bleedingRoll})`
+                msg += `<br><b>${actor.data.token.name}'s</b> upływ krwi odrobinę ustępuje, 1 stan Krwawienia znika (Wyrzucono ${bleedingRoll})`
                 actor.removeCondition("bleeding")
             }
             else 
             {
-                msg += `<br>Bleeding Roll: ${bleedingRoll}`
+                msg += `<br>Rzut na Krwawienie: ${bleedingRoll}`
             }
         }
 
@@ -1328,12 +1328,12 @@ WFRP4E.systemScripts = {
         
             if (corruptionCounters.length)
             {
-              content += `<h3><b>Corruption</b></h3>`
+              content += `<h3><b>Korupcja</b></h3>`
               for(let corruption of corruptionCounters)
               {
                 content+=`${corruption.counter} ${corruption.type}<br>`
               }
-              content+= `<br><b>Click a corruption link to prompt a test for Corruption</b>`
+              content+= `<br><b>Naciśnij link aby rozpocząć test Korupcji</b>`
               content += `<br>@Corruption[Minor]<br>@Corruption[Moderate]<br>@Corruption[Major]`
             }
             return content        
@@ -1343,7 +1343,7 @@ WFRP4E.systemScripts = {
             let content = ""
             if (minorInfections.length)
             {
-                content += `<h3><b>Minor Infections</b></h3>These actors have received Critical Wounds and needs to succeed a <b>Very Easy (+60) Endurance Test</b> or gain a @Compendium[wfrp4e-core.diseases.1hQuVFZt9QnnbWzg]{Minor Infection}.<br>`
+                content += `<h3><b>Pomniejsza Infekcja</b></h3>Poniżsi aktorzy otrzymali Obrażenia Krytyczne i muszą zdać <b>Bardzo Łatwt (+60) Test Odporności</b> lub otrzyma Stan @Compendium[wfrp4e-core.diseases.1hQuVFZt9QnnbWzg]{Pomniejszej Infekcji}.<br>`
                 for(let actor of minorInfections)
                 {
                     content += `<br><b>${actor}</b>`
@@ -1369,11 +1369,11 @@ WFRP4E.systemScripts = {
         
             if (diseaseCounters.length)
             {
-              content += `<h3><b>Diseases</b></h3>`
+              content += `<h3><b>Choroby</b></h3>`
               for(let disease of diseaseCounters)
                 content+=`${disease.counter} <a class="item-lookup" data-type="disease" data-open="sheet">${disease.type}</a><br>`
                 
-              content+= `<br>Refer to the diseases for their Contraction Rules`
+              content+= `<br>Sprawdź dokładne zasady poszczególnych Chorób`
             }
             return content        
         }
@@ -1388,7 +1388,7 @@ WFRP4E.statusEffects = [
     {
         icon: "systems/wfrp4e/icons/conditions/bleeding.png",
         id: "bleeding",
-        label: "Bleeding",
+        label: "Krwawienie",
         flags: {
             wfrp4e: {
                 "trigger": "endRound",
@@ -1399,7 +1399,7 @@ WFRP4E.statusEffects = [
     {
         icon: "systems/wfrp4e/icons/conditions/poisoned.png",
         id: "poisoned",
-        label: "Poisoned",
+        label: "Zatrucie",
         flags: {
             wfrp4e: {
                 "trigger": "endRound",
@@ -1413,7 +1413,7 @@ WFRP4E.statusEffects = [
     {
         icon: "systems/wfrp4e/icons/conditions/ablaze.png",
         id: "ablaze",
-        label: "Ablaze",
+        label: "Podpalenie",
         flags: {
             wfrp4e: {
                 "trigger": "endRound",
@@ -1424,13 +1424,13 @@ WFRP4E.statusEffects = [
     {
         icon: "systems/wfrp4e/icons/conditions/deafened.png",
         id: "deafened",
-        label: "Deafened",
+        label: "Ogłuszenie",
         flags: {
             wfrp4e: {
                 "trigger": "endRound",
                 "effectTrigger": "dialogChoice",
                 "effectData" : {
-                    "description" : "Tests related to hearing",
+                    "description" : "Testy związane ze słuchem",
                     "modifier" : "-10 * this.flags.wfrp4e.value"
                 },
                 "value": 1
@@ -1440,7 +1440,7 @@ WFRP4E.statusEffects = [
     {
         icon: "systems/wfrp4e/icons/conditions/stunned.png",
         id: "stunned",
-        label: "Stunned",
+        label: "Oszołomienie",
         flags: {
             wfrp4e: {
                 "trigger": "endRound",
@@ -1453,13 +1453,13 @@ WFRP4E.statusEffects = [
     {
         icon: "systems/wfrp4e/icons/conditions/entangled.png",
         id: "entangled",
-        label: "Entangled",
+        label: "Pochwycenie",
         flags: {
             wfrp4e: {
                 "trigger": "endRound",
                 "effectTrigger": "dialogChoice",
                 "effectData" : {
-                    "description" : "Tests related to movement of any kind",
+                    "description" : "Testy w jakikolwiek sposób związane z ruchem",
                     "modifier" : "-10 * this.flags.wfrp4e.value"
                 },
                 "value": 1
@@ -1469,7 +1469,7 @@ WFRP4E.statusEffects = [
     {
         icon: "systems/wfrp4e/icons/conditions/fatigued.png",
         id: "fatigued",
-        label: "Fatigued",
+        label: "Zmęczenie",
         flags: {
             wfrp4e: {
                 "effectTrigger": "prefillDialog",
@@ -1481,13 +1481,13 @@ WFRP4E.statusEffects = [
     {
         icon: "systems/wfrp4e/icons/conditions/blinded.png",
         id: "blinded",
-        label: "Blinded",
+        label: "Oślepienie",
         flags: {
             wfrp4e: {
                 "trigger": "endRound",
                 "effectTrigger": "dialogChoice",
                 "effectData" : {
-                    "description" : "Tests related to sight",
+                    "description" : "Testy związane ze wzrokiem",
                     "modifier" : "-10 * this.flags.wfrp4e.value"
                 },
                 "value": 1,
@@ -1501,7 +1501,7 @@ WFRP4E.statusEffects = [
     {
         icon: "systems/wfrp4e/icons/conditions/broken.png",
         id: "broken",
-        label: "Broken",
+        label: "Panika",
         flags: {
             wfrp4e: {
                 "effectTrigger": "prefillDialog",
@@ -1513,12 +1513,12 @@ WFRP4E.statusEffects = [
     {
         icon: "systems/wfrp4e/icons/conditions/prone.png",
         id: "prone",
-        label: "Prone",
+        label: "Powalenie",
         flags: {
             wfrp4e: {
                 "effectTrigger": "dialogChoice",
                 "effectData" : {
-                    "description" : "Tests related to movement of any kind",
+                    "description": "Testy w jakikolwiek sposób związane z ruchem",
                     "modifier" : "-20"
                 },
                 "value": null,
@@ -1532,19 +1532,19 @@ WFRP4E.statusEffects = [
     {
         icon: "systems/wfrp4e/icons/conditions/fear.png",
         id: "fear",
-        label: "Fear",
+        label: "Strach",
         flags: {
             wfrp4e: {
                 "effectTrigger": "dialogChoice",
                 "effectData" : {
-                    "description" : "Tests to affect",
+                    "description" : "Testy powiązane z",
                     "slBonus" : "-1"
                 },
                 "script" : `
                     if (this.flags.wfrp4e.fearName)
                         this.flags.wfrp4e.effectData.description += " " + this.flags.wfrp4e.fearName
                     else
-                        this.flags.wfrp4e.effectData.description += " the source of fear"
+                        this.flags.wfrp4e.effectData.description += "e źródłem strachu"
                 `,
                 "value": null
             }
@@ -1553,7 +1553,7 @@ WFRP4E.statusEffects = [
     {
         icon: "systems/wfrp4e/icons/conditions/surprised.png",
         id: "surprised",
-        label: "Surprised",
+        label: "Zaskoczenie",
         flags: {
             wfrp4e: {
                 "value": null,
@@ -1567,7 +1567,7 @@ WFRP4E.statusEffects = [
     {
         icon: "systems/wfrp4e/icons/conditions/unconscious.png",
         id: "unconscious",
-        label: "Unconscious",
+        label: "Nieprzytomność",
         flags: {
             wfrp4e: {
                 "value": null
@@ -1577,7 +1577,7 @@ WFRP4E.statusEffects = [
     {
         icon: "systems/wfrp4e/icons/conditions/grappling.png",
         id: "grappling",
-        label: "Grappling",
+        label: "Zapasy",
         flags: {
             wfrp4e: {
                 "value": null
@@ -1588,7 +1588,7 @@ WFRP4E.statusEffects = [
     {
         icon: "systems/wfrp4e/icons/defeated.png",
         id: "dead",
-        label: "Dead",
+        label: "Śmierć",
         flags: {
             wfrp4e: {
                 "value": null
@@ -1601,15 +1601,15 @@ WFRP4E.statusEffects = [
 
 
 WFRP4E.effectApplication = {
-    "actor" : "Actor",
-    "equipped" : "When Item equipped",
-    "apply" : "Apply with targeting",
-    "damage" : "Apply when Item applies damage",
+    "actor" : "Aktor",
+    "equipped" : "Gdy przedmiot w użyciu",
+    "apply" : "aktywowany podczas obierania celu",
+    "damage" : "aktywowany gdy przedmiot zadaje Obrażenia",
 }
 
 WFRP4E.applyScope = {
-    "actor" : "Actor",
-    "item" : "Item"
+    "actor" : "Aktor",
+    "item" : "Przedmiot"
 }
 
 WFRP4E.effectTriggers = {
@@ -1658,24 +1658,24 @@ WFRP4E.effectTriggers = {
 WFRP4E.effectPlaceholder = {
 
     "invoke" : 
-    `This effect is only applied when the Invoke button is pressed.
+    `Ten efekt aktywowany jest wyłącznie gdy przycisk Aktywuj jest wciśnięty.
     args:
 
     none`,
     "oneTime" : 
-    `This effect happens once, immediately when applied.
+    `Ten efekt ma miejsce raz, aplikowany jest natychmiast.
     args:
 
     actor : actor who owns the effect
     `,
     "prefillDialog" : 
-    `This effect is applied before rendering the roll dialog, and is meant to change the values prefilled in the bonus section
+    `Ten efekt aplikowany jest przed wyświetleniem okna dialogowego rzutu i ma na celu zmienić wartości bonusu wypełniane w formularzu
     args:
 
     prefillModifiers : {modifier, difficulty, slBonus, successBonus}
-    type: string, 'weapon', 'skill' 'characteristic', etc.
-    item: the item used of the aforementioned type
-    options: other details about the test (options.rest or options.mutate for example)
+    type: string, 'weapon', 'skill' 'characteristic', itd.
+    item: Przedmiot typu podanego powyżej
+    options: inne szczegóły dotyczące testu (na prykład options.rest lub options.mutate)
     
     Example: 
     if (args.type == "skill" && args.item.name == "Athletics") args.prefillModifiers.modifier += 10`,
