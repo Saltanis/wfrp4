@@ -3,17 +3,17 @@
   "die": "1d100",
     "rows": [
         {
-            "description": "G³owa",
+            "description": "GÅ‚owa",
             "result": "head",
             "range": [ 1, 9 ]
         },
         {
-            "description": "Lewe ramiê (lub prawe, w przypadku, leworêcznych)",
+            "description": "Lewe ramiÄ™ (lub prawe, w przypadku, leworÄ™cznych)",
             "result": "lArm",
             "range": [ 10, 24 ]
         },
         {
-            "description": "Prawe ramiê (lub lewe, w przypadku, praworêcznych)",
+            "description": "Prawe ramiÄ™ (lub lewe, w przypadku, praworÄ™cznych)",
             "result": "rArm",
             "range": [ 25, 44 ]
         },
