@@ -611,7 +611,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     // Unarmed attack button (fist in the combat tab)
     html.find('.fist-icon').click(async event => {
       event.preventDefault();
-      let unarmed = game.wfrp4e.config.systemItems.unarmed
+      let unarmed = game.wfrp4e.config.systemItems.unarmed;
       this.actor.setupWeapon(unarmed).then(setupData => {
         this.actor.weaponTest(setupData)
       });

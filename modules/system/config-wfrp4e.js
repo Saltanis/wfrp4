@@ -774,7 +774,7 @@ WFRP4E.systemItems = {
           effects : [],
           data: {
             specification: { value: "4" },
-            rollable: { value: true, rollCharacteristic: "ws", bonusCharacteristic: "s", defaultDifficulty: "challenging" },
+            rollable: { value: true, rollCharacteristic: "ws", skill: "NAME.MeleeBrawling", bonusCharacteristic: "s", defaultDifficulty: "challenging" },
         }
     },
     unarmed : {
@@ -846,7 +846,8 @@ WFRP4E.systemItems = {
                 "effectApplication": "actor",
                 "terrorValue": 1,
                 "script": `
-                    args.actor.setupSkill("Opanowanie").then(setupData =>{
+                    let skillName = game.i18n.localize("NAME.Cool")
+                    args.actor.setupSkill(skillName).then(setupData =>{
                     args.actor.basicTest(setupData).then(test => {
                         if (test.result.result == "failure")
                         {
@@ -1149,7 +1150,7 @@ WFRP4E.systemEffects = {
                                 improv.data.twohanded.value = args.item.data.twohanded.value
                                 improv.data.offhand.value = args.item.data.offhand.value
                                 mergeObject(args.item.data, improv.data, {overwrite : true})
-                                args.item.name += " (Infighting)"
+                                args.item.name += " (W zwarciu)"
                             }
                         }
                 `
@@ -1230,7 +1231,8 @@ WFRP4E.systemEffects = {
                 "effectTrigger": "prefillDialog",
                 "effectApplication": "actor",
                 "script": `
-                    if (args.type=="skill" && args.item.name=="Opanowanie")
+                    let skillName = game.i18n.localize("NAME.Cool")
+                    if (args.type=="skill" && args.item.name==skillName)
                         args.prefillModifiers.modifier += 20` 
             }
         }
@@ -1613,7 +1615,7 @@ WFRP4E.statusEffects = [
     {
         icon: "systems/wfrp4e/icons/conditions/unconscious.png",
         id: "unconscious",
-        label: "Nieprzytomność",
+        label: "Nieprzytomny",
         flags: {
             wfrp4e: {
                 "value": null

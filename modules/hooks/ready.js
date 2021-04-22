@@ -33,7 +33,7 @@ export default function() {
       for (let m in activeModules) {
         if (activeModules[m]) {
           try {
-            await FilePicker.browse("data", `modules/${m}/tables`).then(resp => {
+            await FilePicker.browse("data", `modules/${m}/tables`).then(async resp => {
 
               if (resp.error || !resp.target.includes("tables"))
                 throw ""
@@ -43,7 +43,7 @@ export default function() {
                     continue
                   let filename = file.substring(file.lastIndexOf("/") + 1, file.indexOf(".json"));
 
-                  fetch(file).then(r => r.json()).then(async records => {
+                  await fetch(file).then(r => r.json()).then(async records => {
                     // If extension of a table, add it to the columns
                     if (records.extend && WFRP_Tables[filename]) {
                       WFRP_Tables[filename].columns = WFRP_Tables[filename].columns.concat(records.columns)
@@ -67,7 +67,7 @@ export default function() {
         }
       }
       // Load tables from world if it has a tables folder
-      await FilePicker.browse("data", `worlds/${game.world.name}/tables`).then(resp => {
+      await FilePicker.browse("data", `worlds/${game.world.name}/tables`).then(async resp => {
         try {
           if (resp.error || !resp.target.includes("tables"))
             throw ""
@@ -77,7 +77,7 @@ export default function() {
                 continue
               let filename = file.substring(file.lastIndexOf("/") + 1, file.indexOf(".json"));
 
-              fetch(file).then(r => r.json()).then(async records => {
+              await fetch(file).then(r => r.json()).then(async records => {
                 // If extension of a table, add it to the columns
                 if (records.extend && WFRP_Tables[filename]) {
                   WFRP_Tables[filename].columns = WFRP_Tables[filename].columns.concat(records.columns)
@@ -102,7 +102,7 @@ export default function() {
       })
       resolve()
     })
-
+    
     if (game.user.isGM)
       await game.settings.set("wfrp4e", "tables", WFRP_Utility._packageTables())
     else 
@@ -113,7 +113,7 @@ export default function() {
     }
 
     game.wfrp4e.utility.addTablesToSidebar(ui.sidebar._element.find("#tables"))
-
+    
     //***** Change cursor styles if the setting is enabled *****
 
     if (game.settings.get('wfrp4e', 'customCursor')) {

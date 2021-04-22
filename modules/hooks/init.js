@@ -36,7 +36,7 @@ export default function() {
     })
     // Create scatter table
     game.wfrp4e.tables.scatter = {
-      name: "Scatter",
+      name: "Rozrzut",
       die: "1d10",
       rows: [
         {
@@ -84,7 +84,7 @@ export default function() {
 
     // Create Winds table
     game.wfrp4e.tables.winds = {
-      name: "The Swirling Winds",
+      name: "Wiry Wiatrów Magii",
       die: "1d10",
       rows: [
         {
