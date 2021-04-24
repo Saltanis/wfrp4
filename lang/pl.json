@@ -321,6 +321,7 @@
     "Blessed By": "Pobłogosławiony przez",
     "Sin": "Grzech",
     "Species": "Rasa",
+    "Subspecies" : "Subrasa",
     "Gender": "Płeć",
     "Career Level": "Poziom Profesji",
     "Career Group": "Ścieżka Profesji",
@@ -964,7 +965,9 @@
     "CONFIGURE.AddActorEncumbrance": "Dodaj Obciążenie do Aktorów",
 
     "BUTTON.PostBug": "Zgłoś błąd",
-    "BUTTON.CharacterCreation": "Tworzenie Bohatera",
+    "BUTTON.CharacterCreation": "Tworzenie Bohatera", 
+    "CHAT.NoGenerator" : "Brak aktywnego generatora. Użyj komendy /char aby rozpocząć.",
+
 
     "EFFECT.TabWFRP": "WFRP",
     "EFFECT.EffectType": "Typ Efektu",
