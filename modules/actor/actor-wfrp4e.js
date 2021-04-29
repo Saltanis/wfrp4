@@ -1343,6 +1343,7 @@ export default class ActorWfrp4e extends Actor {
         hitLocation: testData.hitLocation,
         talents: this.data.flags.talentTests,
         characteristicList: game.wfrp4e.config.characteristics,
+        chargingOption: this.showCharging(trait),
         characteristicToUse: trait.data.rollable.rollCharacteristic,
         advantage: this.data.data.status.advantage.value || 0,
         dialogEffects: this.getDialogChoices()
@@ -1690,36 +1691,39 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
         OpposedWFRP.handleOpposedTarget(msg) // Send to handleOpposed to determine opposed status, if any.
       })
 
-    if (testData.extra.dualWielding && result.result == "success") {
+    if (testData.extra.dualWielding) {
       let offHandData = duplicate(testData)
 
       if (!this.hasSystemEffect("dualwielder"))
         this.addSystemEffect("dualwielder")
 
-      let offhandWeapon = this.data.weapons.find(w => w.data.offhand.value);
-      if (testData.roll % 11 == 0 || testData.roll == 100)
-        delete offHandData.roll
-      else {
-        let offhandRoll = testData.roll.toString();
-        if (offhandRoll.length == 1)
-          offhandRoll = offhandRoll[0] + "0"
-        else
-          offhandRoll = offhandRoll[1] + offhandRoll[0]
-        offHandData.roll = Number(offhandRoll);
+      if (result.result == "success") {
+        let offhandWeapon = this.data.weapons.find(w => w.data.offhand.value);
+        if (testData.roll % 11 == 0 || testData.roll == 100)
+          delete offHandData.roll
+        else {
+          let offhandRoll = testData.roll.toString();
+          if (offhandRoll.length == 1)
+            offhandRoll = offhandRoll[0] + "0"
+          else
+            offhandRoll = offhandRoll[1] + offhandRoll[0]
+          offHandData.roll = Number(offhandRoll);
+        }
+
+        offHandData.extra.dualWielding = false;
+        offHandData.extra.weapon = offhandWeapon;
+
+        let offHandModifier = -20
+        offHandModifier += Math.min(20, this.data.flags.ambi * 10)
+
+        offHandData.target += offHandModifier;
+
+        let offHandCard = duplicate(cardOptions)
+        offHandCard.title = game.i18n.localize("WeaponTest") + " - " + offhandWeapon.name + " (" + game.i18n.localize("SHEET.Offhand") + ")";
+        offHandCard.sound = ""
+        this.weaponTest({ testData: offHandData, cardOptions: offHandCard })
       }
 
-      offHandData.extra.dualWielding = false;
-      offHandData.extra.weapon = offhandWeapon;
-
-      let offHandModifier = -20
-      offHandModifier += Math.min(20, this.data.flags.ambi * 10)
-
-      offHandData.target += offHandModifier;
-
-      let offHandCard = duplicate(cardOptions)
-      offHandCard.title = game.i18n.localize("WeaponTest") + " - " + offhandWeapon.name + " (" + game.i18n.localize("SHEET.Offhand") + ")";
-      offHandCard.sound = ""
-      this.weaponTest({ testData: offHandData, cardOptions: offHandCard })
     }
 
     return { result, cardOptions };
@@ -4637,16 +4641,14 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     }
 
     if (trigger == "targetPrefillDialog" && game.user.targets.size) {
-      effects = game.user.targets.values().next().value.actor.data.effects.filter(e => getProperty(e, "flags.wfrp4e.effectTrigger") == "targetPrefillDialog" && !e.disabled)
-      let secondaryEffects = duplicate(game.user.targets.values().next().value.actor.data.effects.filter(e => getProperty(e, "flags.wfrp4e.secondaryEffect.effectTrigger") == "targetPrefillDialog" && !e.disabled)) // A kludge that supports 2 effects. Specifically used by conditions
+      effects = game.user.targets.values().next().value.actor.effects.filter(e => getProperty(e.data, "flags.wfrp4e.effectTrigger") == "targetPrefillDialog" && !e.data.disabled).map(e => e.data)
+      let secondaryEffects = duplicate(game.user.targets.values().next().value.actor.effects.filter(e => getProperty(e.data, "flags.wfrp4e.secondaryEffect.effectTrigger") == "targetPrefillDialog" && !e.data.disabled)).map(e => e.data) // A kludge that supports 2 effects. Specifically used by conditions
       effects = effects.concat(secondaryEffects.map(e => {
         e.flags.wfrp4e.effectTrigger = e.flags.wfrp4e.secondaryEffect.effectTrigger;
         e.flags.wfrp4e.script = e.flags.wfrp4e.secondaryEffect.script;
         return e
       }))
-
     }
-
 
     effects.forEach(e => {
       try {
@@ -4981,7 +4983,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
   
   setAdvantage(val)
   {
-    let advantage = this.data.data.status.advantage;
+    let advantage = duplicate(this.data.data.status.advantage);
     if (game.settings.get("wfrp4e", "capAdvantageIB"))
       advantage.max = this.data.data.characteristics.i.bonus;
     else 
@@ -4998,7 +5000,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
   setWounds(val)
   {
-    let wounds = this.data.data.status.wounds;
+    let wounds = duplicate(this.data.data.status.wounds);
 
     wounds.value = Math.clamped(val, 0, wounds.max)
     this.update({"data.status.wounds" : wounds})
@@ -5009,8 +5011,11 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
   }
 
 
-  showCharging(weapon) {
-    return true// weapon.attackType == "melee" && (weapon.properties.flaws.includes(game.i18n.localize("PROPERTY.Tiring")) || this.itemTypes["talent"].find(t => t.data.name.includes(game.i18n.localize("NAME.Resolute"))) || this.isMounted)
+  showCharging(item) {
+    if (item.type == "weapon" && item.attackType == "melee")
+      return true
+    else if (item.type == "trait" && item.data.rollable.rollCharacteristic == "ws")
+      return true
   }
 
   get isMounted() {
@@ -5271,6 +5276,53 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
   hasSystemEffect(key)
   {
     return this.hasCondition(key) // Same function so just reuse
+  }
+
+
+  /**
+   * Creates a chat message with current conditions and penalties to an actor.
+   * 
+   * @param {String} tokenId  Token id to retrieve token from canvas
+   * @param {Object} round    Round object to display round number
+   */
+  displayStatus(round = undefined, nameOverride) {
+    if (round)
+      round = "- Round " + round;
+
+        let displayConditions = this.data.effects.map(e => {
+        if (hasProperty(e, "flags.core.statusId"))
+        {
+          return e.label + " " + (e.flags.wfrp4e.value || "")
+        }
+      }).filter(i => !!i)
+
+    // Aggregate conditions to be easily displayed (bleeding4 and bleeding1 turns into Bleeding 5)
+
+    let chatOptions = {
+      rollMode: game.settings.get("core", "rollMode")
+    };
+    if (["gmroll", "blindroll"].includes(chatOptions.rollMode)) chatOptions["whisper"] = ChatMessage.getWhisperRecipients("GM").map(u => u.id);
+    if (chatOptions.rollMode === "blindroll") chatOptions["blind"] = true;
+    chatOptions["template"] = "systems/wfrp4e/templates/chat/combat-status.html"
+
+
+    let chatData = {
+      name: nameOverride || (this.token ? this.token.name : this.data.token.name),
+      conditions: displayConditions,
+      modifiers: this.data.flags.modifier,
+      round: round
+    }
+
+
+    return renderTemplate(chatOptions.template, chatData).then(html => {
+      chatOptions["user"] = game.user._id
+
+      // Emit the HTML as a chat message
+      chatOptions["content"] = html;
+      chatOptions["type"] = 0;
+      ChatMessage.create(chatOptions, false);
+      return html;
+    });
   }
 
 

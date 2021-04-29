@@ -85,6 +85,8 @@
     "SETTINGS.ThrowMoneyHint" : "(Requires Dice So Nice) Throws coins when the payment/credit system is used.",
     "SETTINGS.RangeAutoCalculation" : "Range Modifier Auto Calculation",
     "SETTINGS.RangeAutoCalculationHint" :  "Prefill the roll dialog with a modifier based on the distance between tokens.",
+    "SETTINGS.PlayerExperienceEditing" : "Player Experience Editing",
+    "SETTINGS.PlayerExperienceEditingHint" :  "Allows players to manually edit their experience point values.",
 
     "SHEET.Close" : "Close",
     "SHEET.Configure" : "Configure Sheet",
@@ -434,6 +436,7 @@
     "DIALOG.VehicleActorSelect" : "Select the Actor to use the weapon",
     "DIALOG.ActorSelection" : "Select an Actor",
     "DIALOG.ShowTable" : "Table Visibility",
+    "DIALOG.RevertExperience" : "Revert Experience Points?",
     
     "CHAT.CareerChoose" : "Choose Your Career",
     "CHAT.DamageError" : "Error calculating damage:",
@@ -456,6 +459,9 @@
     "CHAT.CriticalWoundsApplied" : "Wounds applied to",
     "CHAT.OpposedWonAgainst" : "won against",
     "CHAT.By" : "by",
+    "CHAT.EditItem" : "Edit Item",
+    "CHAT.Haggle" : "Haggle",
+    "CHAT.HaggleHint" : "Change Item Price by +/-10%",
     "CHAT.CorruptingInfluence" : "Corrupting Influence",
     "CHAT.Resist" : "Resist",
     "CHAT.ContextualMenu" : "A contextual menu could be available on this card (right click)",
@@ -465,6 +471,7 @@
     "CHAT.WitchcraftMiscast" : "Witchcraft - Gain 1 Corruption if rolling on Miscast",
     "CHAT.ChannellingMiscast" : "Casting failed after Channelling",
     "CHAT.Fear" : "Fear",
+    "CHAT.FearReminder" : "These actors are currently subject to <b>Fear</b> and can perform a Test to overcome it.",
     "CHAT.ApplyTT" : "GMs: Select tokens to apply to.\nPlayers: Applies to assigned character",
     "CHAT.Terror" : "Terror",
     "CHAT.Apply" : "Apply",
@@ -968,6 +975,9 @@
     "BUTTON.CharacterCreation" : "Character Creation",
     "CHAT.NoGenerator" : "No Active Generator. Use /char to start the process.",
 
+    "CAREER.LeaveComplete" : "Leaving a Complete Career",
+    "CAREER.LeaveIncomplete" : "Leaving an Incomplete Career",
+    "CAREER.DifferentClass" : "Entering a different Class",
 
     "EFFECT.TabWFRP" : "WFRP",
     "EFFECT.EffectType" : "Effect Type",
