@@ -33,6 +33,5 @@ export default function registerHooks() {
     contextHooks.default()
     tokenHooks.default()
     moduleHooks.default()
-    moduleHooks.default()
     setupHooks.default();
 }

@@ -3668,6 +3668,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     let scriptArgs = { actor, opposeData, totalWoundLoss, AP, damageType, updateMsg, messageElements, attacker }
     actor.runEffects("takeDamage", scriptArgs)
     attacker.runEffects("applyDamage", scriptArgs)
+    Hooks.call("wfrp4e:applyDamage", scriptArgs)
 
     let item = opposeData.attackerTestResult.weapon || opposeData.attackerTestResult.trait || opposeData.attackerTestResult.spell || opposeData.attackerTestResult.prayer
     let itemDamageEffects = item.effects.filter(e => getProperty(e, "flags.wfrp4e.effectApplication") == "damage")
@@ -4387,6 +4388,11 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
             slBonus -= 1;
             tooltip.push(game.i18n.localize("PROPERTY.Imprecise"))
           }
+
+          if (item.properties.qualities.includes(game.i18n.localize("PROPERTY.Slashing"))) {
+            tooltip.push(game.i18n.localize("PROPERTY.Slashing"))
+          }
+          //PROPERTY.Slashing
         }
 
         if (attacker && attacker.testResult.weapon && attacker.testResult.weapon.properties.flaws.includes(game.i18n.localize('PROPERTY.Slow')))
