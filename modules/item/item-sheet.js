@@ -376,7 +376,11 @@ export default class ItemSheetWfrp4e extends ItemSheet {
       if (ev.target.value == this.item.name)
         return
 
-      let currentCareer = duplicate(this.item.actor.data.careers.find(i => i.data.current.value));
+      let existingCurrentCareer = this.item.actor.data.careers.find(i => i.data.current.value);
+      if(!existingCurrentCareer) 
+        return
+        
+      let currentCareer = duplicate(existingCurrentCareer);
 
       // If career has the skill that was changed, change the name in the career
       if (currentCareer && currentCareer.data.skills.includes(this.item.name))
