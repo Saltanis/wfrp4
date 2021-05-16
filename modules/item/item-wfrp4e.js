@@ -338,13 +338,13 @@ export default class ItemWfrp4e extends Item {
     {
         dialogResult = await new Promise( (resolve, reject) => {new Dialog({
           content : 
-            `<p>Add a Quantity?</p>
+            `<p>Podaj ilość?</p>
           <div class="form-group">
-            <label> Quantity</label>
-            <input name="quantity" type="text" placeholder="Leave blank for infinite"/>
+            <label> Ilość</label>
+            <input name="quantity" type="text" placeholder="Pozostaw puste jeśli brak limitu."/>
           </div>
           `,
-          title: "Post Quantity",
+          title: "Opublikuj w ilości",
           buttons: {
             post: {
               label: "Post",
@@ -353,7 +353,7 @@ export default class ItemWfrp4e extends Item {
               }
             },
             inf: {
-              label: "Infinite",
+              label: "Nieograniczona",
               callback: (dlg) => {
                 resolve("inf")
               }

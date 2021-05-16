@@ -245,7 +245,7 @@
     "SL": "PS",
     "Wearable": "Zdatny do noszenia",
     "Choose": "Wybierz",
-    "Roll": "Rzuć",
+    "Roll": "Rzut",
     "Advantage": "Przewaga",
     "None": "Brak",
     "Free": "Darmowy",
@@ -992,6 +992,6 @@
     "EFFECT.SelectEffect": "Wybierz Efekt",
 
     "Minor": "Pomniejsza",
-    "Moderate": "Nienadzwyczajna",
+    "Moderate": "Umiarkowana",
     "Major": "Poważna"
 }
