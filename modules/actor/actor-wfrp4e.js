@@ -585,7 +585,7 @@ export default class ActorWfrp4e extends Actor {
       testData.extra.options["tb"] = char.bonus;
 
     // Default a WS or BS test to have hit location checked
-    if (characteristicId == "ws" || characteristicId == "bs")
+    if ((characteristicId == "ws" || characteristicId == "bs") && !options.reload)
       testData.hitLocation = true;
 
     // Setup dialog data: title, template, buttons, prefilled data
@@ -672,10 +672,11 @@ export default class ActorWfrp4e extends Actor {
 
 
     // Default a WS, BS, Melee, or Ranged to have hit location checked
-    if (skill.data.characteristic.value == "ws" ||
+    if ((skill.data.characteristic.value == "ws" ||
       skill.data.characteristic.value == "bs" ||
       skill.name.includes(game.i18n.localize("NAME.Melee")) ||
-      skill.name.includes(game.i18n.localize("NAME.Ranged"))) {
+      skill.name.includes(game.i18n.localize("NAME.Ranged")))
+      && !options.reload) {
       testData.hitLocation = true;
     }
 
@@ -1386,7 +1387,8 @@ export default class ActorWfrp4e extends Actor {
 
       options.extended = item._id;
       options.rollMode = defaultRollMode;
-     
+      options.hitLocation = false;
+
     let characteristic = WFRP_Utility.findKey(item.data.test.value, game.wfrp4e.config.characteristics)
     if (characteristic) {
       return this.setupCharacteristic(characteristic, options).then(setupData => {
@@ -1476,7 +1478,7 @@ export default class ActorWfrp4e extends Actor {
       //return ui.notifications.error(game.i18n.localize("ITEM.ReloadError"))
       return this.checkReloadExtendedTest(weapon);
     }
-    this.setupExtendedTest(extendedTest, {reload : true, weapon, appendTitle : " - Reloading"});
+    this.setupExtendedTest(extendedTest, {reload : true, weapon, appendTitle : " - Przeładowuję"});
   }
 
 
