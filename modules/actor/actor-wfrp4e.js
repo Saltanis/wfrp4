@@ -5073,7 +5073,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     {
       let scene = game.scenes.get(this.data.data.status.mount.tokenData.scene)
       if (canvas.scene.id != scene.id)
-        return ui.notifications.error(game.i18n.localize("ERRORTokenMount"))
+        return ui.notifications.error(game.i18n.localize("ErrorTokenMount"))
 
       let token = canvas.tokens.get(this.data.data.status.mount.tokenData.token)
 

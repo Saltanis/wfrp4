@@ -143,7 +143,8 @@
     "SHEET.NewInjury": "New Rana",
     "SHEET.DoesDamage": "Zadane Obrażenia",
     "SHEET.DamageValue": "Wartość Obrażeń",
-
+    "SHEET.Dismount": "Zejdź z wierzchowca",
+    "SHEET.RemoveMount": "Usuń Wierzchowca",
 
     "ACTOR.BasicSkillsTitle": "Dodaj Umiejętności Podstawowe",
     "ACTOR.BasicSkillsPrompt": "Dodać Umiejętności Podstawowe?",
@@ -380,7 +381,8 @@
     "Hide Progress": "Ukryj Postęp",
     "Negative SL Possible": "Możliwe ujemne PS",
     "Failing Decreases Progress": "Porażka cofa postęp",
-    "Effects": "Efekty",
+    "Effects": "Efekty",    
+    "Mount": "Wierzchowiec",
 
     "BROWSER.ItemCategories": "Kategorie Przedmiotów",
     "BROWSER.IncludeWorld": "Uwzględnić Przedmioty ze Świata?",

@@ -524,7 +524,7 @@ export default class OpposedWFRP {
       if (sizeDiff >= 2)
         addImpact = true;
     }
-    
+
     let hasDamaging = false;
     let hasImpact = false;
     if (opposeData.attackerTestResult.weapon) 
