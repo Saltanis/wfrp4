@@ -390,6 +390,11 @@ export default class DiceWFRP {
       // Miscast on fumble
       if (testResults.roll % 11 == 0 || testResults.roll == 100) {
         testResults.extra.color_red = true;
+        testResults.other.push(game.i18n.localize("CHAT.FumbleMiscast"))
+        miscastCounter++;
+      }
+      if (testData.extra.overchannelling > 0) { 
+        testResults.other.push(game.i18n.localize("CHAT.OverchannellingMiscast"))
         miscastCounter++;
       }
     }
@@ -397,15 +402,19 @@ export default class DiceWFRP {
     {
       testResults.castResult = "failure"
       testResults.description = game.i18n.localize("ROLL.CastingFailed")
+      
+      if (testData.extra.overchannelling > 0) { 
+        testResults.other.push(game.i18n.localize("CHAT.OverchannellingMiscast"))
+        miscastCounter++;
+      }
 
       // Critical Casting - succeeds only if the user chooses Total Power option (which is assumed)
       if (testResults.roll % 11 == 0) {
         testResults.extra.color_green = true;
         testResults.description = game.i18n.localize("ROLL.CastingSuccess")
         testResults.extra.critical = game.i18n.localize("ROLL.TotalPower")
-
-        if (!testData.extra.ID)
-          miscastCounter++;
+        testResults.other.push(game.i18n.localize("CHAT.TotalPowerMiscast"))
+        miscastCounter++;
       }
     }
 
@@ -413,50 +422,61 @@ export default class DiceWFRP {
     {
       testResults.castResult = "success"
       testResults.description = game.i18n.localize("ROLL.CastingSuccess")
+      if(testData.extra.overchannelling > 0) {
+        slOver += testData.extra.overchannelling;
+      }
       let overcasts = Math.floor(slOver / 2);
       testResults.overcasts = overcasts;
       spell.overcasts.available = overcasts;
 
-
       if (testResults.roll % 11 == 0) {
         testResults.extra.critical = game.i18n.localize("ROLL.CritCast")
         testResults.extra.color_green = true;
-
-        if (!testData.extra.ID)
-          miscastCounter++;
+        testResults.other.push(game.i18n.localize("CHAT.CritCastMiscast"))
+        miscastCounter++;
       }
 
+    }
+
+    if(testData.extra.quickcasting && miscastCounter > 0) { 
+      testResults.other.push(game.i18n.localize("CHAT.Quickcasting"))
+      miscastCounter++;
+    }
+
+    let homeBrewIngredient = (testData.unofficialGrimoire && testData.extra.ingredientMode == 'control') || !testData.unofficialGrimoire;
+
+    if(miscastCounter > 2 && !testData.unofficialGrimoire) {
+      miscastCounter = 2;
     }
 
     // Use the number of miscasts to determine what miscast it becomes (null<miscast> is from ingredients)
     switch (miscastCounter) {
       case 1:
-        if (testData.extra.ingredient)
+        if (testData.extra.ingredient && homeBrewIngredient)
           testResults.extra.nullminormis = game.i18n.localize("ROLL.MinorMis")
-        else {
+        else
           testResults.extra.minormis = game.i18n.localize("ROLL.MinorMis")
-        }
         break;
       case 2:
-        if (testData.extra.ingredient) {
+        if (testData.extra.ingredient && homeBrewIngredient) {
           testResults.extra.nullmajormis = game.i18n.localize("ROLL.MajorMis")
           testResults.extra.minormis = game.i18n.localize("ROLL.MinorMis")
         }
-        else {
+        else
           testResults.extra.majormis = game.i18n.localize("ROLL.MajorMis")
-        }
         break;
       case 3:
-        testResults.extra.majormis = game.i18n.localize("ROLL.MajorMis")
+          if (testData.extra.ingredient && homeBrewIngredient) {
+            testResults.extra.nullcatastrophicmis = game.i18n.localize("ROLL.CatastrophicMis")
+            testResults.extra.majormis = game.i18n.localize("ROLL.MajorMis")
+          }
+          else
+            testResults.extra.catastrophicmis = game.i18n.localize("ROLL.CatastrophicMis")
+          break;
+      case 4:
+        testResults.extra.catastrophicmis = game.i18n.localize("ROLL.CatastrophicMis")
         break;
     }
-
-    if (testData.extra.ingredient)
-      miscastCounter--;
-    if (miscastCounter < 0)
-      miscastCounter = 0;
-    if (miscastCounter > 2)
-      miscastCounter = 2
 
     testResults.additionalDamage = testData.additionalDamage || 0
     // Calculate Damage if the spell has it specified and succeeded in casting
@@ -525,7 +545,16 @@ export default class DiceWFRP {
       // Major Miscast on fumble
       if (testResults.roll % 11 == 0 || testResults.roll % 10 == 0 || testResults.roll == 100) {
         testResults.extra.color_red = true;
-        miscastCounter += 2;
+
+        if(testData.unofficialGrimoire) {
+          miscastCounter += 1;
+          if(testResults.roll == 100 || testResults.roll == 99) {
+            SL = spell.data.cn.value * (-1)
+            miscastCounter += 1;
+          }
+        } else {
+          miscastCounter += 2;
+        }
       }
     }
     else // Successs - add SL to spell for further use
@@ -541,15 +570,23 @@ export default class DiceWFRP {
         testResults.extra.color_green = true;
         SL = spell.data.cn.value;
         testResults.extra.criticalchannell = game.i18n.localize("ROLL.CritChannel")
-        if (!testData.extra.AA)
-          miscastCounter++;
+        miscastCounter++;
+      }
+      if(testData.unofficialGrimoire) {
+        if(testData.extra.ingredientMode == 'power' && testData.extra.ingredient) {
+          SL = Number(SL) * 2
+        }
       }
     }
 
     // Add SL to CN and update actor
     SL = spell.data.cn.SL + Number(SL);
-    if (SL > spell.data.cn.value)
+    if (SL > spell.data.cn.value) {
+      if(testData.unofficialGrimoire) {
+        testResults.overchannelling = SL - spell.data.cn.value;
+      }   
       SL = spell.data.cn.value;
+    }
     else if (SL < 0)
       SL = 0;
 
@@ -559,16 +596,25 @@ export default class DiceWFRP {
         'data.cn.SL': SL
       });
 
+    testResults.extra.spellcn = spell.data.cn.value - SL;
+    if(testResults.extra.spellcn < 0) {
+      testResults.extra.spellcn = 0;
+    }
+    let homeBrewIngredient = (testData.unofficialGrimoire && testData.extra.ingredientMode == 'control') || !testData.unofficialGrimoire;
+    if(miscastCounter > 2 && !testData.unofficialGrimoire) {
+      miscastCounter = 2;
+    }
+
     // Use the number of miscasts to determine what miscast it becomes (null<miscast> is from ingredients)
     switch (miscastCounter) {
       case 1:
-        if (testData.extra.ingredient)
+        if (testData.extra.ingredient && homeBrewIngredient)
           testResults.extra.nullminormis = game.i18n.localize("ROLL.MinorMis")
         else
           testResults.extra.minormis = game.i18n.localize("ROLL.MinorMis")
         break;
       case 2:
-        if (testData.extra.ingredient) {
+        if (testData.extra.ingredient && homeBrewIngredient) {
           testResults.extra.nullmajormis = game.i18n.localize("ROLL.MajorMis")
           testResults.extra.minormis = game.i18n.localize("ROLL.MinorMis")
         }
@@ -576,16 +622,18 @@ export default class DiceWFRP {
           testResults.extra.majormis = game.i18n.localize("ROLL.MajorMis")
         break;
       case 3:
-        testResults.extra.majormis = game.i18n.localize("ROLL.MajorMis")
+          if (testData.extra.ingredient && homeBrewIngredient) {
+            testResults.extra.nullcatastrophicmis = game.i18n.localize("ROLL.CatastrophicMis")
+            testResults.extra.majormis = game.i18n.localize("ROLL.MajorMis")
+          }
+          else
+            testResults.extra.catastrophicmis = game.i18n.localize("ROLL.CatastrophicMis")
+          break;
+      case 4:
+        testResults.extra.catastrophicmis = game.i18n.localize("ROLL.CatastrophicMis")
         break;
     }
 
-    if (testData.extra.ingredient)
-      miscastCounter--;
-    if (miscastCounter < 0)
-      miscastCounter = 0;
-    if (miscastCounter > 2)
-      miscastCounter = 2
     return testResults;
   }
 

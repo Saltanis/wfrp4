@@ -87,6 +87,8 @@
     "SETTINGS.RangeAutoCalculationHint" :  "Prefill the roll dialog with a modifier based on the distance between tokens.",
     "SETTINGS.PlayerExperienceEditing" : "Player Experience Editing",
     "SETTINGS.PlayerExperienceEditingHint" :  "Allows players to manually edit their experience point values.",
+    "SETTINGS.UnofficialGrimoire" : "Unofficial Grimoire Magic",
+    "SETTINGS.UnofficialGrimoireHint" : "TODO",
 
     "SHEET.Close" : "Close",
     "SHEET.Configure" : "Configure Sheet",
@@ -439,7 +441,13 @@
     "DIALOG.ActorSelection" : "Select an Actor",
     "DIALOG.ShowTable" : "Table Visibility",
     "DIALOG.RevertExperience" : "Revert Experience Points?",
+    "DIALOG.UseIngredient": "Choose how to use ingredient (if available)",
+    "DIALOG.UseIngredientTooltip": "You may focus your magic through an appropriate material component before discharging your spell. Ingredients react differently depending on how you funnel your magic through them. Before you cast or channel, you must choose whether to use the ingredient for Power or Control. Ingredients are consumed even when the spell fails. <br/> Power Ingredient: When used during a Channelling Test, a power ingredient doubles the number of SL aquired on success (see overchannelling). When used during a Casting Test, a power ingredient allows you to reverse the dice and choose the result for your Casting Test. However, if the units die after reverse of your Casting Test exceeds your Willpower Bonus, the energy exceeds your grasp and you unleash a Minor Miscast. <br/> Control Ingredient: When used during a Channelling or Casting Test, a control ingredient acts as a target for out-of-control magic. Reduce the severity of one suffered Miscast by one table: ie, from Catastrophic to Major, Major to Minor, or Minor to none.",
+    "DIALOG.OverchannellingTooltip" : "When you are Channelling, you are presumed to vent any excess SL beyond that which would reduce the spell’s CN to 0 harmlessly. After the Test is rolled, you may choose instead to keep the excess magical energy that you have gathered and apply it to Overcasting once the spell is cast. (Example: Bianca channels a spell with a CN of 3 and scores 7 SL; she chooses to bank the extra 4 SL for Overcasting effects once the spell is cast.) But this extra power is not without its cost. If the casting Test fails, you lose all channelled energy and suffer a Minor Miscast. Further, you count any double or any roll ending in a 0 over your channelling or Language (Magick) Skill as a Fumble (so, 00, 99, 90, 88, etc) and any Critical or Fumble on these Tests is a Major Miscast instead. ",
+    "DIALOG.Quickcasting" : "Quick Casting",
+    "DIALOG.QuickcastingTooltip" : "If you forfeit your Move and all Free Actions, you may use your Turn to quickly Channel and Cast in the same Action. Because you are rushing, increase the severity of any suffered Miscast by one table (ie, from Minor to Major or Major to Catastrophic). ",
     
+    "CHAT.Quickcasting" : "Quick Casting",
     "CHAT.CareerChoose" : "Choose Your Career",
     "CHAT.DamageError" : "Error calculating damage:",
     "CHAT.DamageAppliedError" : "No damage values. Ensure the attacker is using a damage-causing item, like a weapon.",
@@ -472,6 +480,10 @@
     "CHAT.RemovedConditions" : "Removed a <b>{condition}</b> Condition from <b>{name}</b>",
     "CHAT.WitchcraftMiscast" : "Witchcraft - Gain 1 Corruption if rolling on Miscast",
     "CHAT.ChannellingMiscast" : "Casting failed after Channelling",
+    "CHAT.OverchannellingMiscast" : "Miscast due to Overchannelling",
+    "CHAT.FumbleMiscast": "Miscast due to Fumble",
+    "CHAT.TotalPowerMiscast" : "Miscast due to Full Power",
+    "CHAT.CritCastMiscast" : "Miscast due to Critical Success",
     "CHAT.Fear" : "Fear",
     "CHAT.FearReminder" : "These actors are currently subject to <b>Fear</b> and can perform a Test to overcome it.",
     "CHAT.ApplyTT" : "GMs: Select tokens to apply to.\nPlayers: Applies to assigned character",
@@ -569,6 +581,7 @@
     "ROLL.CritChannel" : "Critical Channel",
     "ROLL.MinorMis" : "Minor Miscast",
     "ROLL.MajorMis" : "Major Miscast",
+    "ROLL.CatastrophicMis" : "Catastrophic Miscast",
     "ROLL.PrayRefused" : "Prayer Refused",
     "ROLL.PrayGranted" : "Prayer Granted",
     "ROLL.Wrath" : "Wrath of the Gods",
@@ -995,5 +1008,15 @@
     "EFFECT.HideEffect" : "Hide From Players",
     "EFFECT.SystemEffects" : "System Effects",
     "EFFECT.SelectEffect" : "Select Effect",
-    "EFFECT.Tooltip": "These effects MAY be causing these bonuses"
+    "EFFECT.Tooltip": "These effects MAY be causing these bonuses",
+
+    "Minor": "Minor",
+    "Moderate": "Moderate",
+    "Major": "Major",
+
+    "IngredientNone" : "None",
+    "IngredientPower" : "Power",
+    "IngredientControl" : "Control",
+    "ConsumedIngredient" : "<p>Ingredient consumed</p>",
+    "Overchannelling" : "Overchannelling"
 }

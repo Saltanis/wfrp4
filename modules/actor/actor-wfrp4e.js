@@ -932,15 +932,12 @@ export default class ActorWfrp4e extends Actor {
     let castSkills = [{ key: "int", name: game.i18n.localize("CHAR.Int") }]
 
     // if the actor has Language (Magick), add it to the array.
-    let skill = this.data.skills.find(i => i.name.toLowerCase() == `${game.i18n.localize("Language")} (${game.i18n.localize("Magick")})`.toLowerCase())
+    let skill = this.data.skills.find(i => i.name.toLowerCase() == `${game.i18n.localize("NAME.Language")} (${game.i18n.localize("SPEC.Magick")})`.toLowerCase())
     if (skill)
       castSkills.push(skill)
 
     // Default to Language Magick if it exists
-    let defaultSelection = castSkills.findIndex(i => i.name.toLowerCase() == `${game.i18n.localize("Language")} (${game.i18n.localize("Magick")})`.toLowerCase())
-
-    // Whether the actor has Instinctive Diction is important in the test rolling logic
-    let instinctiveDiction = (this.data.flags.talentTests.findIndex(x => x.talentName.toLowerCase() == game.i18n.localize("NAME.ID").toLowerCase()) > -1) // instinctive diction boolean
+    let defaultSelection = castSkills.findIndex(i => i.name.toLowerCase() == `${game.i18n.localize("NAME.Language")} (${game.i18n.localize("SPEC.Magick")})`.toLowerCase())
 
     if (!spell.prepared)
       this.prepareSpellOrPrayer(spell);
@@ -974,7 +971,11 @@ export default class ActorWfrp4e extends Actor {
 
     mergeObject(testData, this.getPrefillData("cast", spell, options))
 
-
+    testData.unofficialGrimoire = game.settings.get("wfrp4e", "unofficialgrimoire");
+    let advantages = this.data.data.status.advantage.value || 0;
+    if(testData.unofficialGrimoire) {
+      advantages = "N/A";
+    }
     // Setup dialog data: title, template, buttons, prefilled data
     let dialogOptions = {
       title: title,
@@ -984,10 +985,11 @@ export default class ActorWfrp4e extends Actor {
         hitLocation: testData.hitLocation,
         malignantInfluence: testData.malignantInfluence,
         talents: this.data.flags.talentTests,
-        advantage: this.data.data.status.advantage.value || 0,
+        advantage: advantages,
         defaultSelection: defaultSelection,
         castSkills: castSkills,
         rollMode: options.rollMode,
+        unofficialGrimoire: testData.unofficialGrimoire,
         dialogEffects: this.getDialogChoices()
       },
       callback: (html) => {
@@ -998,7 +1000,11 @@ export default class ActorWfrp4e extends Actor {
         testData.testDifficulty = game.wfrp4e.config.difficultyModifiers[html.find('[name="testDifficulty"]').val()];
         testData.successBonus = Number(html.find('[name="successBonus"]').val());
         testData.slBonus = Number(html.find('[name="slBonus"]').val());
-
+        if(testData.unofficialGrimoire) {
+          testData.extra.ingredientMode = html.find('[name="ingredientTypeSelected"]').val();
+          testData.extra.overchannelling = Number(html.find('[name="overchannelling"]').val());
+          testData.extra.quickcasting = html.find('[name="quickcasting"]').is(':checked');
+        }
         let skillSelected = castSkills[Number(html.find('[name="skillSelected"]').val())];
 
         // If an actual skill (Language Magick) was selected, use that skill to calculate the target number
@@ -1080,16 +1086,12 @@ export default class ActorWfrp4e extends Actor {
     if (spellLore == "witchcraft")
       defaultSelection = channellSkills.indexOf(channellSkills.find(x => x.name.toLowerCase().includes(game.i18n.localize("NAME.Channelling").toLowerCase())))
 
-    // Whether the actor has Aethyric Attunement is important in the test rolling logic
-    let aethyricAttunement = (this.data.flags.talentTests.findIndex(x => x.talentName.toLowerCase() == game.i18n.localize("NAME.AA").toLowerCase()) > -1) // aethyric attunement boolean
-
     let testData = {
       target: 0,
       extra: { // Store data to be used by the test logic
         spell: spell,
         malignantInfluence: false,
         ingredient: false,
-        AA: undefined,//aethyricAttunement,
         size: this.data.data.details.size.value,
         options: options
       }
@@ -1105,6 +1107,7 @@ export default class ActorWfrp4e extends Actor {
       }
 
     mergeObject(testData, this.getPrefillData("channelling", spell, options))
+    testData.unofficialGrimoire = game.settings.get("wfrp4e", "unofficialgrimoire");
 
     // Setup dialog data: title, template, buttons, prefilled data
     let dialogOptions = {
@@ -1118,6 +1121,7 @@ export default class ActorWfrp4e extends Actor {
         talents: this.data.flags.talentTests,
         advantage: "N/A",
         rollMode: options.rollMode,
+        unofficialGrimoire: testData.unofficialGrimoire,
         dialogEffects: this.getDialogChoices()
       },
       callback: (html) => {
@@ -1129,7 +1133,9 @@ export default class ActorWfrp4e extends Actor {
         testData.successBonus = Number(html.find('[name="successBonus"]').val());
         testData.slBonus = Number(html.find('[name="slBonus"]').val());
         testData.extra.malignantInfluence = html.find('[name="malignantInfluence"]').is(':checked');
-
+        if(testData.unofficialGrimoire) {
+          testData.extra.ingredientMode = html.find('[name="ingredientTypeSelected"]').val();
+        }
         let skillSelected = channellSkills[Number(html.find('[name="skillSelected"]').val())];
         // If an actual Channelling skill was selected, use that skill to calculate the target number
         if (skillSelected.key != "wp") {
@@ -1750,11 +1756,16 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
     // Find ingredient being used, if any
     let ing = duplicate(this.getEmbeddedEntity("OwnedItem", testData.extra.spell.data.currentIng.value))
-    if (ing && ing.data.quantity.value > 0 && !testData.extra.edited && !testData.extra.reroll) {
+    let homeBrewIngredient = (testData.unofficialGrimoire && testData.extra.ingredientMode != 'none') || !testData.unofficialGrimoire;
+
+    if (ing && ing.data.quantity.value > 0 && !testData.extra.edited && !testData.extra.reroll && homeBrewIngredient)  {
       // Decrease ingredient quantity
       testData.extra.ingredient = true;
       ing.data.quantity.value--;
       this.updateEmbeddedEntity("OwnedItem", ing);
+      if(homeBrewIngredient) {
+        ChatMessage.create({ speaker: cardOptions.speaker, content: game.i18n.localize("ConsumedIngredient") })
+      }
     }
     // If quantity of ingredient is 0, disregard the ingredient
     else if (!ing || ing.data.quantity.value <= 0)
@@ -1818,11 +1829,15 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
     // Find ingredient being used, if any
     let ing = duplicate(this.getEmbeddedEntity("OwnedItem", testData.extra.spell.data.currentIng.value))
-    if (ing && ing.data.quantity.value > 0 && !testData.extra.edited && !testData.extra.reroll) {
+    let homeBrewIngredient = (testData.unofficialGrimoire && testData.extra.ingredientMode != 'none') || !testData.unofficialGrimoire;
+    if (ing && ing.data.quantity.value > 0 && !testData.extra.edited && !testData.extra.reroll && homeBrewIngredient){
       // Decrease ingredient quantity
       testData.extra.ingredient = true;
       ing.data.quantity.value--;
       this.updateEmbeddedEntity("OwnedItem", ing);
+      if(homeBrewIngredient) {
+        ChatMessage.create({ speaker: cardOptions.speaker, content: game.i18n.localize("ConsumedIngredient") })
+      }
     }
     // If quantity of ingredient is 0, disregard the ingredient
     else if (!ing || ing.data.quantity.value <= 0)

@@ -180,6 +180,7 @@ export default class WFRP_Tables {
 
       case "minormis":
       case "majormis":
+      case "catastrophicmis":
       case "event":
       case "wrath":
       case "travel":

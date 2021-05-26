@@ -44,9 +44,9 @@
     "SETTINGS.CriticalsFumblesAllTests": "Krytyczne sukcesy i pech dla wszystkic testów",
     "SETTINGS.CriticalsFumblesAllTestsHint": "Wyrzucenie dubletu na dowolnym teście skutkuje Zdumiewającym Sukcesem/Porażką.",
     "SETTINGS.ExtendedTests": "Testy Wydłużone i 0 PS",
-    "SETTINGS.ExtendedTestsHint": "Wyrzucenie +/- 0 podczas testu wydłużonego zawsze jest traktowane jako +1/01 (strona 155).",
+    "SETTINGS.ExtendedTestsHint": "Wyrzucenie +/- 0 podczas testu wydłużonego zawsze jest traktowane jako +1/-1 (strona 155).",
     "SETTINGS.ChannelingNegativeSL": "Splatanie Magii i negatywne PS",
-    "SETTINGS.ChannelingNegativeSLHint": "Wyrzucenie negatywnych PS podczas testu Splatania traktowane jest jako +0, wymuszając brak postępiu w Splataniu.",
+    "SETTINGS.ChannelingNegativeSLHint": "Wyrzucenie negatywnych PS podczas testu Splatania traktowane jest jako +0, wymuszając brak postępu w Splataniu.",
     "SETTINGS.TestDialogAutoPopulate": "Automatycznie wypełniaj okno Testu",
     "SETTINGS.TestDialogAutoPopulateHint": "Zaznaczając tę opcję, automatycznie będą wypełniane pola w oknie Testu. Kilka przykładów uwzględnia: Trzymanie Broni z cechą Parująca automatycznie wypełni pole 'Bonus PS' w teście Walki (ale tylko gdy to nie jest tura danego Aktora), podobnie gdy Aktor trzyma broń z cechą Celna lub Nieprecyzyjna (w turze danego Aktora).",
     "SETTINGS.TestDialogDefaultDifficulty": "Domyślna trudność testów nie dotyczących Walki",
@@ -87,6 +87,8 @@
     "SETTINGS.RangeAutoCalculationHint": "Wypełnij okno dialogowe testu modyfikatorami na podstawie odległości między tokenami.",
     "SETTINGS.PlayerExperienceEditing" : "Edycja Doświadczenia Postaci",
     "SETTINGS.PlayerExperienceEditingHint" :  "Pozwól graczom ręcznie ustawiać ilość doświadczenia postaci.",
+    "SETTINGS.UnofficialGrimoire" : "Unofficial Grimoire - Zasady Rzucania Zaklęć",
+    "SETTINGS.UnofficialGrimoireHint" : "Zbiór zasad z Unofficial Grimoire, uwzględnia Katastrofalne Manifestacje Chaosu. Uwzględnia zmianę dotyczącą używania składników,Składniki reagują różnie w zależności od tego, jak przez nie przepuszczasz swoją magię. Przed rzuceniem lub splataniem musisz zdecydować, czy chcesz użyć składnika do Mocy czy Kontroli. Składniki są zużywane nawet wtedy, gdy zaklęcie zawiedzie.Składnik Mocy: gdy zostanie użyty podczas testu splatania, składnik mocy podwaja liczbę PS zdobywanych przy zdanym teście (patrz Przekanałowanie Mocy). Podczas testu rzucania składnik mocy pozwala odwrócić kości i zmienić wynik testu rzutu. Jeśli jednak wartość na kości jedności po odwróceniu testu rzucania zaklęć przekroczy twoją premię do siły woli, energia cię rozsadza i uwolniasz Pomniejszą Manifestację Chaosu. Składnik kontroli: Kiedy jest używany podczas testu splatania lub rzucania, składnik kontroli działa jak bezpiecznik wymykającej się spod kontroli magii. Zmniejsz wagę jednej z manifestacji o jeden poziom: tj. Z Katastrofalnej na Poważną, z Poważnej na Pomniejszą lub z Pomniejszej na żadną. Przekanałowanie Mocy: podczas Splatania zakłada się, że wyładowujesz nadmiar PS poza to, co wymagane w nieszkodliwy sposób zmniejszając PZ zaklęcia do 0. Po wykonaniu testu możesz zamiast tego zachować nadmiar zgromadzonej magicznej energii i zastosować ją do Przekanałowania Mocy podczas Rzucania Zaklęcia. (Przykład: Bianca rzuca zaklęcie z CN 3 i zdobywa 7 SL; po rzuceniu zaklęcia decyduje się zebrać dodatkowe 4 SL na efekty Krytycznego Rzucenia Zaklęcia.) Ale ta dodatkowa moc nie jest pozbawiona kosztu. Jeśli Test rzucania zakończy się niepowodzeniem, stracisz całą energię i wywołujesz Pomniejszą Manifestację. Co więcej, każdy podwójny lub dowolny rzut kończący się na 0 w stosunku do umiejętności Języka (Magiczny) jest traktowany jako Pech (czyli 00, 99, 90, 88 itd.), A każdy Pech, traktowany jest jako Poważna Manifestacja zamiast Pomniejszej. Ryzykowne Czarowanie: jeśli poświęcisz Ruch i wszystkie darmowe akcje, możesz użyć swojej tury, aby szybko splatać i rzucić zaklęcie w tej samej akcji. Ponieważ się spieszysz, zwiększ wagę każdej wywołanej Manifestacji o jeden poziom (tj. Od Pomniejszej do Poważnej lub Poważnej do Katastrofalnej).",
 
     "SHEET.Close": "Zamknij",
     "SHEET.Configure": "Ustawienia Karty",
@@ -439,7 +441,13 @@
     "DIALOG.ActorSelection": "Wybierz aktora",
     "DIALOG.ShowTable": "Widoczność Tabel",
     "DIALOG.RevertExperience" : "Cofnąć Punkty Doświadczenia?",
+    "DIALOG.UseIngredient": "Wybierz w jaki sposób wykorzystać składnik (gdy dostępny)",
+    "DIALOG.UseIngredientTooltip": "Możesz skupić swoją magię za pomocą odpowiedniego składnika, zanim użyjesz zaklęcia. Składniki reagują różnie w zależności od tego, jak przez nie przepuszczasz swoją magię. Przed rzuceniem lub splataniem musisz zdecydować, czy chcesz użyć składnika do Mocy czy Kontroli. Składniki są zużywane nawet wtedy, gdy zaklęcie zawiedzie. <br/> Składnik Mocy: gdy zostanie użyty podczas testu splatania, składnik mocy podwaja liczbę PS zdobywanych przy zdanym teście (patrz overchannelling). Podczas testu rzucania składnik mocy pozwala odwrócić kości i zmienić wynik testu rzutu. Jeśli jednak wartość na kości jedności po odwróceniu testu rzucania zaklęć przekroczy twoją premię do siły woli, energia cię rozsadza i uwolniasz Pomniejszą Manifestację Chaosi. <br/> Składnik kontrolny: Kiedy jest używany podczas testu splatania lub rzucania, składnik kontroli działa jak bezpiecznik wymykającej się spod kontroli magii. Zmniejsz wagę jednej z manifestacji o jeden poziom: tj. Z Katastrofalnej na Poważną, z Poważnej na Pomniejszą lub z Pomniejszej na żadną.",
+    "DIALOG.OverchannellingTooltip" : "Podczas Splatania zakłada się, że wyładowujesz nadmiar PS poza to, co wymagane w nieszkodliwy sposób zmniejszając PZ zaklęcia do 0. Po wykonaniu testu możesz zamiast tego zachować nadmiar zgromadzonej magicznej energii i zastosować ją do Overcasting po rzuceniu zaklęcia. (Przykład: Bianca rzuca zaklęcie z CN 3 i zdobywa 7 SL; po rzuceniu zaklęcia decyduje się zebrać dodatkowe 4 SL na efekty Overcast.) Ale ta dodatkowa moc nie jest pozbawiona kosztu. Jeśli Test rzucania zakończy się niepowodzeniem, stracisz całą energię i wywołujesz Pomniejszą Manifestację. Co więcej, każdy podwójny lub dowolny rzut kończący się na 0 w stosunku do umiejętności Języka (Magiczny) jest traktowany jako Pech (czyli 00, 99, 90, 88 itd.), A każdy Pech, traktowany jest jako Poważna Manifestacja zamiast Pomniejszej.",
+    "DIALOG.Quickcasting" : "Ryzykowne Czarowanie",
+    "DIALOG.QuickcastingTooltip" : "Jeśli poświęcisz Ruch i wszystkie darmowe akcje, możesz użyć swojej tury, aby szybko splatać i rzucić zaklęcie w tej samej akcji. Ponieważ się spieszysz, zwiększ wagę każdej wywołanej Manifestacji o jeden poziom (tj. Od Pomniejszej do Poważnej lub Poważnej do Katastrofalnej).",
 
+    "CHAT.Quickcasting" : "Ryzykowne Czarowanie",
     "CHAT.CareerChoose": "Wybierz swoją Profesję",
     "CHAT.DamageError": "Błąd liczenia obrażeń:",
     "CHAT.DamageAppliedError": "Brak wartości obrażeń. Upewnij się, że atakujący jest wyposażony w broń.",
@@ -472,6 +480,10 @@
     "CHAT.RemovedConditions": "Usunięto Stan <b>{condition}</b> z <b>{name}</b>",
     "CHAT.WitchcraftMiscast": "Czarownictwo - Otrzymujesz 1 Punkt Korupcji jeśli wywołasz Manifestację Chaosu",
     "CHAT.ChannellingMiscast": "Czarowanie nie powiodło się po Splataniu",
+    "CHAT.OverchannellingMiscast" : "Manifestacja z powodu Przekanałowania Mocy",
+    "CHAT.FumbleMiscast": "Manifestacja z powodu Pecha",
+    "CHAT.TotalPowerMiscast" : "Manifestacja z powodu Pełnej Mocy",
+    "CHAT.CritCastMiscast" : "Manifestacja z powodu Krytycznego Sukcesu",
     "CHAT.Fear": "Strach", 
     "CHAT.FearReminder" : "Następujący aktorzy są pod wpływem <b>Strachu</b> i mogą wykonać test, aby go przełamać.",
     "CHAT.ApplyTT": "MG: Wybierz znaczniki do zaaplikowania.\nGracze: Zaaplikuj przypisanej postaci",
@@ -569,6 +581,7 @@
     "ROLL.CritChannel": "Krytyczne splecenie czaru",
     "ROLL.MinorMis": "Mniejsza Manifestacja",
     "ROLL.MajorMis": "Większa Manifestacja",
+    "ROLL.CatastrophicMis" : "Katastrofalna Manifestacja",
     "ROLL.PrayRefused": "Modlitwa nie została wysłuchana",
     "ROLL.PrayGranted": "Modlitwa została wysłuchana",
     "ROLL.Wrath": "Gniew Bogów",
@@ -684,7 +697,7 @@
     "WFRP4E.ConditionName.Stunned": "Oszołomienie",
     "WFRP4E.ConditionName.Surprised": "Zaskoczenie",
     "WFRP4E.ConditionName.Unconscious": "Nieprzytomny",
-    "WFRP4E.ConditionName.Grappling": "Pochwycenie",
+    "WFRP4E.ConditionName.Grappling": "Zapasy",
     "WFRP4E.ConditionName.Fear": "Strach",
     "WFRP4E.ConditionName.Defeated": "Pokonany",
 
@@ -998,5 +1011,11 @@
 
     "Minor": "Pomniejsza",
     "Moderate": "Umiarkowana",
-    "Major": "Poważna"
+    "Major": "Poważna",
+
+    "IngredientNone" : "Brak",
+    "IngredientPower" : "Moc",
+    "IngredientControl" : "Kontrola",
+    "ConsumedIngredient" : "<p>Zurzyto składnik</p>",
+    "Overchannelling" : "Przekanałowanie mocy"
 }

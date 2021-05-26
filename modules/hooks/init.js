@@ -237,6 +237,17 @@ export default function() {
       type: Boolean
     });
 
+    
+    // Register Partial Channelling
+    game.settings.register("wfrp4e", "unofficialgrimoire", {
+      name: "SETTINGS.UnofficialGrimoire",
+      hint: "SETTINGS.UnofficialGrimoireHint",
+      scope: "world",
+      homebrew: true,
+      config: false,
+      default: false,
+      type: Boolean
+    });
 
     game.settings.register("wfrp4e", "channelingNegativeSLTests", {
       name: "SETTINGS.ChannelingNegativeSL",
