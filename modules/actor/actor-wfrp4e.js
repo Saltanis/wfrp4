@@ -4072,7 +4072,10 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
         if (!data.defenderMessage && data.startMessagesList) {
           cardOptions.startMessagesList = data.startMessagesList;
         }
-        data.preData.extra.previousResult = duplicate(data.postData)
+        data.preData.extra.previousResult = {};
+        data.preData.extra.previousResult.status = data.postData.status;
+        data.preData.extra.previousResult.SL = data.postData.SL;
+        
         data.preData.extra.reroll = true;
         delete data.preData.roll;
         delete data.preData.SL;
@@ -4083,7 +4086,6 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
           "flags.data.fortuneUsedReroll": true,
           "flags.data.fortuneUsedAddSL": true
         });
-
       }
       else //addSL
       {
